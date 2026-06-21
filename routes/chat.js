@@ -11,6 +11,37 @@ const {
 const router = express.Router();
 
 /*
+GET ALL CHATS
+*/
+router.get("/", async (req, res) => {
+
+  try {
+
+    const chats = await Chat.find({
+      deleted: false
+    })
+    .sort({ createdAt: -1 })
+    .limit(100);
+
+    res.json({
+      success: true,
+      count: chats.length,
+      chats
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+
+  }
+
+});
+
+
+/*
 SEND MESSAGE
 */
 router.post(
@@ -34,6 +65,7 @@ router.post(
 
       if (!user) {
         return res.status(404).json({
+          success: false,
           message: "User not found"
         });
       }
@@ -65,9 +97,6 @@ router.post(
 
         });
 
-      /*
-      CREATE ADMIN NOTIFICATION
-      */
       if (mentionsAdmin) {
 
         const admins =
@@ -81,8 +110,7 @@ router.post(
 
             user: admin._id,
 
-            title:
-              "Admin Mention",
+            title: "Admin Mention",
 
             message:
               `${user.ign || user.username} mentioned @admin`,
@@ -95,11 +123,16 @@ router.post(
 
       }
 
-      res.status(201).json(chat);
+      res.status(201).json({
+        success: true,
+        message: "Message Sent",
+        chat
+      });
 
     } catch (error) {
 
       res.status(500).json({
+        success: false,
         message: error.message
       });
 
@@ -107,6 +140,7 @@ router.post(
 
   }
 );
+
 
 /*
 GET GLOBAL CHAT
@@ -125,11 +159,16 @@ router.get(
         .sort({ createdAt: -1 })
         .limit(100);
 
-      res.json(chats);
+      res.json({
+        success: true,
+        count: chats.length,
+        chats
+      });
 
     } catch (error) {
 
       res.status(500).json({
+        success: false,
         message: error.message
       });
 
@@ -137,6 +176,7 @@ router.get(
 
   }
 );
+
 
 /*
 GET TEAM CHAT
@@ -149,21 +189,22 @@ router.get(
 
       const chats =
         await Chat.find({
-
-          teamId:
-            req.params.teamId,
-
+          teamId: req.params.teamId,
           deleted: false
-
         })
         .sort({ createdAt: -1 })
         .limit(100);
 
-      res.json(chats);
+      res.json({
+        success: true,
+        count: chats.length,
+        chats
+      });
 
     } catch (error) {
 
       res.status(500).json({
+        success: false,
         message: error.message
       });
 
@@ -171,6 +212,7 @@ router.get(
 
   }
 );
+
 
 /*
 GET TOURNAMENT CHAT
@@ -183,21 +225,22 @@ router.get(
 
       const chats =
         await Chat.find({
-
-          tournamentId:
-            req.params.tournamentId,
-
+          tournamentId: req.params.tournamentId,
           deleted: false
-
         })
         .sort({ createdAt: -1 })
         .limit(100);
 
-      res.json(chats);
+      res.json({
+        success: true,
+        count: chats.length,
+        chats
+      });
 
     } catch (error) {
 
       res.status(500).json({
+        success: false,
         message: error.message
       });
 
@@ -205,6 +248,7 @@ router.get(
 
   }
 );
+
 
 /*
 EDIT MESSAGE
@@ -223,8 +267,8 @@ router.put(
 
       if (!chat) {
         return res.status(404).json({
-          message:
-            "Message not found"
+          success: false,
+          message: "Message not found"
         });
       }
 
@@ -233,8 +277,8 @@ router.put(
         req.user.id
       ) {
         return res.status(403).json({
-          message:
-            "Not allowed"
+          success: false,
+          message: "Not allowed"
         });
       }
 
@@ -245,11 +289,16 @@ router.put(
 
       await chat.save();
 
-      res.json(chat);
+      res.json({
+        success: true,
+        message: "Message Updated",
+        chat
+      });
 
     } catch (error) {
 
       res.status(500).json({
+        success: false,
         message: error.message
       });
 
@@ -257,6 +306,7 @@ router.put(
 
   }
 );
+
 
 /*
 DELETE MESSAGE
@@ -275,8 +325,8 @@ router.delete(
 
       if (!chat) {
         return res.status(404).json({
-          message:
-            "Message not found"
+          success: false,
+          message: "Message not found"
         });
       }
 
@@ -285,8 +335,8 @@ router.delete(
         req.user.id
       ) {
         return res.status(403).json({
-          message:
-            "Not allowed"
+          success: false,
+          message: "Not allowed"
         });
       }
 
@@ -295,13 +345,14 @@ router.delete(
       await chat.save();
 
       res.json({
-        message:
-          "Message deleted"
+        success: true,
+        message: "Message Deleted"
       });
 
     } catch (error) {
 
       res.status(500).json({
+        success: false,
         message: error.message
       });
 
