@@ -1,8 +1,21 @@
 const express = require("express");
 const mongoose = require("mongoose");
-require("dotenv").config();
+const cors = require("cors");
+
+const authRoutes = require("./routes/auth");
+const tournamentRoutes = require("./routes/tournament");
 
 const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+app.use("/api/auth", authRoutes);
+app.use("/api/tournament", tournamentRoutes);
+
+app.listen(5000, () => {
+  console.log("Server running");
+});
 
 app.use(express.json());
 
