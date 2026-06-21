@@ -1,7 +1,6 @@
 const express = require("express");
 
 const Result = require("../models/Result");
-const Tournament = require("../models/Tournament");
 
 const {
   verifyToken,
@@ -9,6 +8,34 @@ const {
 } = require("../middleware/auth");
 
 const router = express.Router();
+
+/*
+GET ALL RESULTS
+*/
+router.get("/", async (req, res) => {
+
+  try {
+
+    const results = await Result.find({})
+      .sort({ createdAt: -1 });
+
+    res.json({
+      success: true,
+      count: results.length,
+      results
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+
+  }
+
+});
+
 
 /*
 PUBLISH RESULT
@@ -35,11 +62,11 @@ router.post(
       const killPoints = kills;
 
       const totalPoints =
-        placementPoints +
-        killPoints;
+        Number(placementPoints) +
+        Number(killPoints);
 
       const result =
-        new Result({
+        await Result.create({
 
           tournamentId,
           teamName,
@@ -53,9 +80,8 @@ router.post(
 
         });
 
-      await result.save();
-
       res.status(201).json({
+        success: true,
         message: "Result Published",
         result
       });
@@ -63,6 +89,7 @@ router.post(
     } catch (error) {
 
       res.status(500).json({
+        success: false,
         message: error.message
       });
 
@@ -70,6 +97,7 @@ router.post(
 
   }
 );
+
 
 /*
 GET RESULTS OF TOURNAMENT
@@ -82,19 +110,23 @@ router.get(
 
       const results =
         await Result.find({
-          tournamentId:
-          req.params.id
+          tournamentId: req.params.id
         })
         .sort({
           totalPoints: -1,
           kills: -1
         });
 
-      res.json(results);
+      res.json({
+        success: true,
+        count: results.length,
+        results
+      });
 
     } catch (error) {
 
       res.status(500).json({
+        success: false,
         message: error.message
       });
 
@@ -102,6 +134,7 @@ router.get(
 
   }
 );
+
 
 /*
 GET TOP 3
@@ -114,8 +147,7 @@ router.get(
 
       const results =
         await Result.find({
-          tournamentId:
-          req.params.id
+          tournamentId: req.params.id
         })
         .sort({
           totalPoints: -1,
@@ -123,11 +155,15 @@ router.get(
         })
         .limit(3);
 
-      res.json(results);
+      res.json({
+        success: true,
+        results
+      });
 
     } catch (error) {
 
       res.status(500).json({
+        success: false,
         message: error.message
       });
 
@@ -135,6 +171,7 @@ router.get(
 
   }
 );
+
 
 /*
 UPDATE RESULT
@@ -158,14 +195,12 @@ router.put(
       const killPoints = kills;
 
       const totalPoints =
-        placementPoints +
-        killPoints;
+        Number(placementPoints) +
+        Number(killPoints);
 
       const result =
         await Result.findByIdAndUpdate(
-
           req.params.id,
-
           {
             placement,
             kills,
@@ -174,18 +209,21 @@ router.put(
             totalPoints,
             prize
           },
-
           {
             new: true
           }
-
         );
 
-      res.json(result);
+      res.json({
+        success: true,
+        message: "Result Updated",
+        result
+      });
 
     } catch (error) {
 
       res.status(500).json({
+        success: false,
         message: error.message
       });
 
@@ -193,6 +231,7 @@ router.put(
 
   }
 );
+
 
 /*
 DELETE RESULT
@@ -211,13 +250,14 @@ router.delete(
       );
 
       res.json({
-        message:
-        "Result Deleted"
+        success: true,
+        message: "Result Deleted"
       });
 
     } catch (error) {
 
       res.status(500).json({
+        success: false,
         message: error.message
       });
 
