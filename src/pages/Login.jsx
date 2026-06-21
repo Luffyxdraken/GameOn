@@ -1,29 +1,29 @@
-function Login(){
+function Login() {
+  return (
+    <div>
+      <h1>Login</h1>
 
-return (
+      <input
+        type="email"
+        placeholder="Email"
+      />
 
-<div>
+      <br />
+      <br />
 
-<h1>
-Admin / Player Login
-</h1>
+      <input
+        type="password"
+        placeholder="Password"
+      />
 
+      <br />
+      <br />
 
-<input placeholder="Email"/>
-
-<input placeholder="Password"/>
-
-
-<button>
-Login
-</button>
-
-
-</div>
-
-)
-
+      <button>
+        Login
+      </button>
+    </div>
+  );
 }
-
 
 export default Login;
