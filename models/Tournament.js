@@ -1,111 +1,67 @@
-const express = require("express");
-const Tournament = require("../models/Tournament");
-
-const {
-  verifyToken,
-  isAdmin
-} = require("../middleware/auth");
-
-const router = express.Router();
+const mongoose = require("mongoose");
 
 
-/*
-TEST + GET ALL TOURNAMENTS
-*/
-router.get("/", async (req, res) => {
+const TournamentSchema = new mongoose.Schema({
 
-  try {
+  title:{
+    type:String,
+    required:true
+  },
 
-    const tournaments = await Tournament.find();
+  banner:{
+    type:String,
+    default:""
+  },
 
-    res.json({
-      success: true,
-      count: tournaments.length,
-      tournaments
-    });
+  game:{
+    type:String,
+    default:"Free Fire Max"
+  },
 
-  } catch (error) {
+  tier:{
+    type:String,
+    default:"Tier 3"
+  },
 
-    res.status(500).json({
-      success:false,
-      message:error.message
-    });
+  prizePool:{
+    type:Number,
+    default:0
+  },
 
+  entryFee:{
+    type:Number,
+    default:0
+  },
+
+  totalSlots:{
+    type:Number,
+    default:12
+  },
+
+  filledSlots:{
+    type:Number,
+    default:0
+  },
+
+  registrationOpen:{
+    type:Boolean,
+    default:true
+  },
+
+  status:{
+    type:String,
+    default:"Upcoming"
+  },
+
+  description:{
+    type:String,
+    default:""
   }
 
 });
 
 
-/*
-CREATE TOURNAMENT
-ADMIN ONLY
-*/
-router.post(
-"/create",
-verifyToken,
-isAdmin,
-async(req,res)=>{
-
-try{
-
-const tournament = new Tournament(req.body);
-
-await tournament.save();
-
-res.status(201).json({
-success:true,
-message:"Tournament Created",
-tournament
-});
-
-
-}catch(error){
-
-res.status(500).json({
-success:false,
-message:error.message
-});
-
-}
-
-});
-
-
-/*
-UPDATE TOURNAMENT
-*/
-router.put(
-"/update/:id",
-verifyToken,
-isAdmin,
-async(req,res)=>{
-
-try{
-
-const tournament =
-await Tournament.findByIdAndUpdate(
-req.params.id,
-req.body,
-{new:true}
+module.exports = mongoose.model(
+  "Tournament",
+  TournamentSchema
 );
-
-
-res.json({
-success:true,
-tournament
-});
-
-
-}catch(error){
-
-res.status(500).json({
-success:false,
-message:error.message
-});
-
-}
-
-});
-
-
-module.exports = router;
