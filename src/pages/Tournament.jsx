@@ -1,30 +1,24 @@
-import {useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 
+function Tournament() {
+  const { id } = useParams();
 
-function Tournament(){
+  return (
+    <div>
+      <h1>Tournament Page</h1>
 
-const {id}=useParams();
+      <p>ID: {id}</p>
 
+      <h3>Room Details</h3>
 
-return (
+      <p>Room ID: Not Published</p>
+      <p>Password: Not Published</p>
 
-<div>
+      <h3>Results</h3>
 
-<h1>
-Tournament Details
-</h1>
-
-<p>
-Tournament ID:
-{id}
-</p>
-
-
-</div>
-
-)
-
+      <p>No Results Yet</p>
+    </div>
+  );
 }
-
 
 export default Tournament;
