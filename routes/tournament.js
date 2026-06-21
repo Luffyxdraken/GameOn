@@ -1,5 +1,4 @@
 const express = require("express");
-
 const Tournament = require("../models/Tournament");
 
 const {
@@ -10,19 +9,55 @@ const {
 const router = express.Router();
 
 /*
-GET CURRENT TOURNAMENT
+GET ALL TOURNAMENTS
 */
 router.get("/", async (req, res) => {
   try {
 
-    const tournament =
-      await Tournament.findOne();
+    const tournaments = await Tournament.find({});
 
-    res.json(tournament);
+    res.status(200).json({
+      success: true,
+      count: tournaments.length,
+      tournaments
+    });
 
   } catch (error) {
 
     res.status(500).json({
+      success: false,
+      message: error.message
+    });
+
+  }
+});
+
+/*
+GET SINGLE TOURNAMENT
+*/
+router.get("/:id", async (req, res) => {
+  try {
+
+    const tournament = await Tournament.findById(
+      req.params.id
+    );
+
+    if (!tournament) {
+      return res.status(404).json({
+        success: false,
+        message: "Tournament not found"
+      });
+    }
+
+    res.json({
+      success: true,
+      tournament
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      success: false,
       message: error.message
     });
 
@@ -47,6 +82,7 @@ router.post(
       await tournament.save();
 
       res.status(201).json({
+        success: true,
         message: "Tournament Created",
         tournament
       });
@@ -54,6 +90,7 @@ router.post(
     } catch (error) {
 
       res.status(500).json({
+        success: false,
         message: error.message
       });
 
@@ -81,7 +118,15 @@ router.put(
           { new: true }
         );
 
+      if (!tournament) {
+        return res.status(404).json({
+          success: false,
+          message: "Tournament not found"
+        });
+      }
+
       res.json({
+        success: true,
         message: "Tournament Updated",
         tournament
       });
@@ -89,6 +134,7 @@ router.put(
     } catch (error) {
 
       res.status(500).json({
+        success: false,
         message: error.message
       });
 
@@ -125,6 +171,7 @@ router.put(
         );
 
       res.json({
+        success: true,
         message: "Room Updated",
         tournament
       });
@@ -132,6 +179,7 @@ router.put(
     } catch (error) {
 
       res.status(500).json({
+        success: false,
         message: error.message
       });
 
@@ -171,6 +219,7 @@ router.put(
         );
 
       res.json({
+        success: true,
         message: "Results Published",
         tournament
       });
@@ -178,6 +227,7 @@ router.put(
     } catch (error) {
 
       res.status(500).json({
+        success: false,
         message: error.message
       });
 
