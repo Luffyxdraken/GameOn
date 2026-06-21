@@ -1,27 +1,22 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
 require("dotenv").config();
 
+const express = require("express");
+const cors = require("cors");
+
+const connectDB = require("./config/db");
+
 const app = express();
+
+/*
+CONNECT DATABASE
+*/
+connectDB();
 
 /*
 MIDDLEWARE
 */
 app.use(cors());
 app.use(express.json());
-
-/*
-MONGODB CONNECTION
-*/
-mongoose
-.connect(process.env.MONGO_URI)
-.then(() => {
-console.log("MongoDB Connected");
-})
-.catch((err) => {
-console.error(err);
-});
 
 /*
 ROUTES
@@ -57,21 +52,32 @@ app.use("/api/admin-roles", require("./routes/adminRole"));
 app.use("/api/prize-distributions", require("./routes/prizeDistribution"));
 
 /*
-HOME
+HOME ROUTE
 */
 app.get("/", (req, res) => {
 res.json({
+success: true,
 message: "PR eSports API Running"
 });
 });
 
 /*
-SERVER
+404 HANDLER
+*/
+app.use((req, res) => {
+res.status(404).json({
+success: false,
+message: "Route not found"
+});
+});
+
+/*
+START SERVER
 */
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
 console.log(
-"Server running on port ${PORT}"
+"🚀 Server running on port ${PORT}"
 );
 });
