@@ -1,68 +1,111 @@
-const mongoose = require("mongoose");
+const express = require("express");
+const Tournament = require("../models/Tournament");
 
-const TournamentSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
-  },
+const {
+  verifyToken,
+  isAdmin
+} = require("../middleware/auth");
 
-  banner: {
-    type: String,
-    default: "",
-  },
+const router = express.Router();
 
-  game: {
-    type: String,
-    default: "Free Fire Max",
-  },
 
-  tier: {
-    type: String,
-    default: "Tier 3",
-  },
+/*
+TEST + GET ALL TOURNAMENTS
+*/
+router.get("/", async (req, res) => {
 
-  prizePool: {
-    type: Number,
-    default: 0,
-  },
+  try {
 
-  entryFee: {
-    type: Number,
-    default: 0,
-  },
+    const tournaments = await Tournament.find();
 
-  totalSlots: {
-    type: Number,
-    default: 12,
-  },
+    res.json({
+      success: true,
+      count: tournaments.length,
+      tournaments
+    });
 
-  filledSlots: {
-    type: Number,
-    default: 0,
-  },
+  } catch (error) {
 
-  registrationOpen: {
-    type: Boolean,
-    default: true,
-  },
+    res.status(500).json({
+      success:false,
+      message:error.message
+    });
 
-  status: {
-    type: String,
-    default: "Upcoming",
-  },
-
-  description: {
-    type: String,
-    default: "",
-  },
-
-  createdAt: {
-    type: Date,
-    default: Date.now,
   }
+
 });
 
-module.exports = mongoose.model(
-  "Tournament",
-  TournamentSchema
+
+/*
+CREATE TOURNAMENT
+ADMIN ONLY
+*/
+router.post(
+"/create",
+verifyToken,
+isAdmin,
+async(req,res)=>{
+
+try{
+
+const tournament = new Tournament(req.body);
+
+await tournament.save();
+
+res.status(201).json({
+success:true,
+message:"Tournament Created",
+tournament
+});
+
+
+}catch(error){
+
+res.status(500).json({
+success:false,
+message:error.message
+});
+
+}
+
+});
+
+
+/*
+UPDATE TOURNAMENT
+*/
+router.put(
+"/update/:id",
+verifyToken,
+isAdmin,
+async(req,res)=>{
+
+try{
+
+const tournament =
+await Tournament.findByIdAndUpdate(
+req.params.id,
+req.body,
+{new:true}
 );
+
+
+res.json({
+success:true,
+tournament
+});
+
+
+}catch(error){
+
+res.status(500).json({
+success:false,
+message:error.message
+});
+
+}
+
+});
+
+
+module.exports = router;
