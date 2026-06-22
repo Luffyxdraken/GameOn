@@ -29,6 +29,7 @@ ROUTES
 */
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/tournaments", require("./routes/tournament"));
+app.use("/api/users", require("./routes/user")); // <-- ADD THIS LINE
 
 /*
 =================================
