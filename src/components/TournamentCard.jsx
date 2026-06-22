@@ -1,48 +1,22 @@
-import { Link } from "react-router-dom";
-
 function TournamentCard({ tournament }) {
-
   return (
-    <div>
+    <div
+      style={{
+        background: "#1e293b",
+        padding: "20px",
+        borderRadius: "10px",
+        marginBottom: "20px"
+      }}
+    >
+      <h2>{tournament.title}</h2>
 
-      <img 
-        src={tournament.banner || "https://via.placeholder.com/300"}
-        alt={tournament.title}
-      />
+      <p>Prize Pool: ₹{tournament.prizePool}</p>
 
-      <h2>
-        {tournament.title}
-      </h2>
+      <p>Status: {tournament.status}</p>
 
-      <p>
-        Game: {tournament.game}
-      </p>
-
-      <p>
-        Prize Pool: ₹{tournament.prizePool}
-      </p>
-
-      <p>
-        Entry Fee: ₹{tournament.entryFee}
-      </p>
-
-      <p>
-        Slots: {tournament.filledSlots}/{tournament.totalSlots}
-      </p>
-
-      <p>
-        Status: {tournament.status}
-      </p>
-
-
-      <Link to={`/tournament/${tournament._id}`}>
-        View Tournament
-      </Link>
-
-
+      <p>Slots: {tournament.filledSlots}/{tournament.totalSlots}</p>
     </div>
   );
 }
-
 
 export default TournamentCard;
