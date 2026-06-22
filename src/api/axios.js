@@ -1,5 +1,7 @@
 import axios from "axios";
 
-const API = axios.create({
-  baseURL: "https://pr-esports-gameon.onrender.com/api",
+const api = axios.create({
+baseURL: "https://pr-esports-gameon.onrender.com/api",
 });
+
+export default api;
