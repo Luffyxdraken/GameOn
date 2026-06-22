@@ -10,110 +10,106 @@ const router = express.Router();
 REGISTER
 */
 router.post("/register", async (req, res) => {
-  try {
+try {
+const {
+username,
+email,
+password,
+uid
+} = req.body;
 
-    const {
-      username,
-      email,
-      password,
-      ign,
-      uid
-    } = req.body;
+const existingUser =
+  await User.findOne({ email });
 
-    const existingUser = await User.findOne({
-      $or: [
-        { email },
-        { username }
-      ]
-    });
+if (existingUser) {
+  return res.status(400).json({
+    message: "User already exists"
+  });
+}
 
-    if (existingUser) {
-      return res.status(400).json({
-        message: "User already exists"
-      });
-    }
+const hashedPassword =
+  await bcrypt.hash(password, 10);
 
-    const hashedPassword =
-      await bcrypt.hash(password, 10);
+const user = new User({
+  username,
+  email,
+  password: hashedPassword,
+  uid,
+  role: "player"
+});
 
-    const user = new User({
-      username,
-      email,
-      password: hashedPassword,
-      ign,
-      uid
-    });
+await user.save();
 
-    await user.save();
+res.status(201).json({
+  success: true,
+  message: "Account Created"
+});
 
-    res.status(201).json({
-      message: "Registration successful"
-    });
+} catch (error) {
 
-  } catch (error) {
+res.status(500).json({
+  message: error.message
+});
 
-    res.status(500).json({
-      message: error.message
-    });
-
-  }
+}
 });
 
 /*
 LOGIN
 */
 router.post("/login", async (req, res) => {
+try {
 
-  try {
+const {
+  email,
+  password
+} = req.body;
 
-    const { email, password } = req.body;
+const user =
+  await User.findOne({ email });
 
-    const user = await User.findOne({ email });
+if (!user) {
+  return res.status(400).json({
+    message: "User not found"
+  });
+}
 
-    if (!user) {
-      return res.status(400).json({
-        message: "User not found"
-      });
-    }
+const isMatch =
+  await bcrypt.compare(
+    password,
+    user.password
+  );
 
-    const match =
-      await bcrypt.compare(
-        password,
-        user.password
-      );
+if (!isMatch) {
+  return res.status(400).json({
+    message: "Invalid Password"
+  });
+}
 
-    if (!match) {
-      return res.status(400).json({
-        message: "Invalid password"
-      });
-    }
-
-    const token = jwt.sign(
-      {
-        id: user._id,
-        role: user.role
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "7d"
-      }
-    );
-
-    res.json({
-      token,
-      role: user.role,
-      username: user.username,
-      ign: user.ign
-    });
-
-  } catch (error) {
-
-    res.status(500).json({
-      message: error.message
-    });
-
+const token = jwt.sign(
+  {
+    id: user._id,
+    role: user.role
+  },
+  process.env.JWT_SECRET,
+  {
+    expiresIn: "7d"
   }
+);
 
+res.json({
+  success: true,
+  token,
+  user
+});
+
+} catch (error) {
+
+res.status(500).json({
+  message: error.message
+});
+
+}
 });
 
 module.exports = router;
