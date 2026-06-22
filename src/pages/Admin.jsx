@@ -4,10 +4,14 @@ import api from "../api/axios";
 function Admin() {
   const [form, setForm] = useState({
     title: "",
+    type: "solo",
     prizePool: "",
     entryFee: "",
-    totalSlots: 12,
-    description: ""
+    totalSlots: "",
+    startTime: "",
+    description: "",
+    roomId: "",
+    roomPassword: ""
   });
 
   const [message, setMessage] = useState("");
@@ -23,34 +27,24 @@ function Admin() {
     e.preventDefault();
 
     try {
-      const res = await api.post(
-        "/tournaments/create",
-        {
-          title: form.title,
-          prizePool: Number(form.prizePool),
-          entryFee: Number(form.entryFee),
-          totalSlots: Number(form.totalSlots),
-          description: form.description
-        }
-      );
+      await api.post("/tournaments/create", form);
 
       setMessage("Tournament Created Successfully");
 
       setForm({
         title: "",
+        type: "solo",
         prizePool: "",
         entryFee: "",
-        totalSlots: 12,
-        description: ""
+        totalSlots: "",
+        startTime: "",
+        description: "",
+        roomId: "",
+        roomPassword: ""
       });
 
-      console.log(res.data);
-
-    } catch (error) {
-      setMessage(
-        error.response?.data?.message ||
-        "Failed to create tournament"
-      );
+    } catch (err) {
+      setMessage("Failed To Create Tournament");
     }
   };
 
@@ -58,66 +52,89 @@ function Admin() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#0f172a",
+        background: "#08142e",
         color: "white",
         padding: "20px"
       }}
     >
-      <h1
-        style={{
-          color: "#f97316",
-          marginBottom: "20px"
-        }}
-      >
-        Admin Dashboard
+      <h1 style={{ color: "#ff7b22" }}>
+        Super Admin Panel
       </h1>
 
       <form
         onSubmit={createTournament}
         style={{
-          background: "#1e293b",
+          background: "#13203d",
           padding: "20px",
-          borderRadius: "12px",
-          maxWidth: "600px"
+          borderRadius: "15px",
+          maxWidth: "700px"
         }}
       >
-        <h2>Create Tournament</h2>
-
         <input
-          type="text"
           name="title"
-          placeholder="Tournament Title"
+          placeholder="Tournament Name"
           value={form.title}
           onChange={handleChange}
-          required
-          style={inputStyle}
+          style={input}
         />
 
+        <select
+          name="type"
+          value={form.type}
+          onChange={handleChange}
+          style={input}
+        >
+          <option value="solo">Solo</option>
+          <option value="squad">Squad</option>
+          <option value="guildwar">Guild War</option>
+        </select>
+
         <input
-          type="number"
           name="prizePool"
           placeholder="Prize Pool"
           value={form.prizePool}
           onChange={handleChange}
-          style={inputStyle}
+          style={input}
         />
 
         <input
-          type="number"
           name="entryFee"
           placeholder="Entry Fee"
           value={form.entryFee}
           onChange={handleChange}
-          style={inputStyle}
+          style={input}
         />
 
         <input
-          type="number"
           name="totalSlots"
           placeholder="Total Slots"
           value={form.totalSlots}
           onChange={handleChange}
-          style={inputStyle}
+          style={input}
+        />
+
+        <input
+          type="datetime-local"
+          name="startTime"
+          value={form.startTime}
+          onChange={handleChange}
+          style={input}
+        />
+
+        <input
+          name="roomId"
+          placeholder="Room ID"
+          value={form.roomId}
+          onChange={handleChange}
+          style={input}
+        />
+
+        <input
+          name="roomPassword"
+          placeholder="Room Password"
+          value={form.roomPassword}
+          onChange={handleChange}
+          style={input}
         />
 
         <textarea
@@ -126,47 +143,39 @@ function Admin() {
           value={form.description}
           onChange={handleChange}
           style={{
-            ...inputStyle,
-            minHeight: "120px"
+            ...input,
+            height: "120px"
           }}
         />
 
         <button
           type="submit"
           style={{
-            background: "#f97316",
+            width: "100%",
+            padding: "12px",
+            background: "#ff7b22",
             color: "white",
             border: "none",
-            padding: "12px 20px",
-            borderRadius: "8px",
-            cursor: "pointer",
-            width: "100%"
+            borderRadius: "10px",
+            cursor: "pointer"
           }}
         >
           Create Tournament
         </button>
 
-        {message && (
-          <p
-            style={{
-              marginTop: "15px"
-            }}
-          >
-            {message}
-          </p>
-        )}
+        <p>{message}</p>
       </form>
     </div>
   );
 }
 
-const inputStyle = {
+const input = {
   width: "100%",
   padding: "12px",
-  marginBottom: "15px",
+  marginBottom: "12px",
   borderRadius: "8px",
   border: "none",
-  background: "#334155",
+  background: "#1f2d4d",
   color: "white",
   boxSizing: "border-box"
 };
