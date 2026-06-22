@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
+const authRoutes = require("./routes/auth");
 
 const connectDB = require("./config/db");
 
@@ -22,6 +23,8 @@ app.use(express.json());
 ROUTES
 */
 app.use("/api/auth", require("./routes/auth"));
+
+app.use("/api/auth", authRoutes);
 
 app.use("/api/tournaments", require("./routes/tournament"));
 
