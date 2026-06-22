@@ -6,38 +6,44 @@ import Register from "./pages/Register";
 import Tournament from "./pages/Tournament";
 import Admin from "./pages/Admin";
 
+import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile";
+import Messages from "./pages/Messages";
+import Members from "./pages/Members";
+import Guilds from "./pages/Guilds";
+import MyMatches from "./pages/MyMatches";
+import Notifications from "./pages/Notifications";
+import SuperAdmin from "./pages/SuperAdmin";
+
 function App() {
-return (
-<BrowserRouter>
-<Routes>
-<Route
-path="/"
-element={<Home />}
-/>
+  return (
+    <BrowserRouter>
+      <Routes>
 
-    <Route
-      path="/login"
-      element={<Login />}
-    />
+        {/* Public */}
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/tournament/:id" element={<Tournament />} />
 
-    <Route
-      path="/register"
-      element={<Register />}
-    />
+        {/* User */}
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/messages" element={<Messages />} />
+        <Route path="/members" element={<Members />} />
+        <Route path="/guilds" element={<Guilds />} />
+        <Route path="/mymatches" element={<MyMatches />} />
+        <Route path="/notifications" element={<Notifications />} />
 
-    <Route
-      path="/admin"
-      element={<Admin />}
-    />
+        {/* Admin */}
+        <Route path="/admin" element={<Admin />} />
 
-    <Route
-      path="/tournament/:id"
-      element={<Tournament />}
-    />
-  </Routes>
-</BrowserRouter>
+        {/* Super Admin */}
+        <Route path="/superadmin" element={<SuperAdmin />} />
 
-);
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;
