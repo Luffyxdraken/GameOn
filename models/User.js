@@ -2,71 +2,77 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
 {
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true
-  },
+username: {
+type: String,
+required: true,
+trim: true
+},
 
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    lowercase: true
-  },
+email: {
+type: String,
+required: true,
+unique: true,
+lowercase: true
+},
 
-  password: {
-    type: String,
-    required: true
-  },
+password: {
+type: String,
+required: true
+},
 
-  ign: {
-    type: String,
-    required: true
-  },
+uid: {
+type: String,
+default: ""
+},
 
-  uid: {
-    type: Number,
-    required: true
-  },
+profilePhoto: {
+type: String,
+default: ""
+},
 
-  role: {
-    type: String,
-    enum: ["superadmin", "admin", "member"],
-    default: "member"
-  },
+bio: {
+type: String,
+default: ""
+},
 
-  status: {
-    type: String,
-    enum: ["active", "banned"],
-    default: "active"
-  },
+role: {
+type: String,
+enum: [
+"player",
+"admin",
+"superadmin"
+],
+default: "player"
+},
 
-  points: {
-    type: Number,
-    default: 0
-  },
+guild: {
+type: mongoose.Schema.Types.ObjectId,
+ref: "Team",
+default: null
+},
 
-  kills: {
-    type: Number,
-    default: 0
-  },
+notifications: [
+{
+message: String,
+read: {
+type: Boolean,
+default: false
+},
 
-  tournamentsPlayed: {
-    type: Number,
-    default: 0
-  },
-
-  createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User"
+  createdAt: {
+    type: Date,
+    default: Date.now
   }
+}
 
+]
 },
 {
-  timestamps: true
+timestamps: true
 }
 );
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model(
+"User",
+userSchema
+);
