@@ -1,91 +1,138 @@
 const mongoose = require("mongoose");
 
-const TournamentSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true
-  },
+const tournamentSchema = new mongoose.Schema(
+{
+title: {
+type: String,
+required: true
+},
 
-  banner: {
-    type: String,
-    default: ""
-  },
+type: {
+type: String,
+enum: [
+"solo",
+"squad",
+"guildwar"
+],
+default: "solo"
+},
 
-  game: {
-    type: String,
-    default: "Free Fire Max"
-  },
+description: {
+type: String,
+default: ""
+},
 
-  tier: {
-    type: String,
-    default: "Tier 3"
-  },
+prizePool: {
+type: Number,
+default: 0
+},
 
-  prizePool: {
-    type: Number,
-    default: 0
-  },
+entryFee: {
+type: Number,
+default: 0
+},
 
-  entryFee: {
-    type: Number,
-    default: 0
-  },
+totalSlots: {
+type: Number,
+default: 12
+},
 
-  totalSlots: {
-    type: Number,
-    default: 12
-  },
+filledSlots: {
+type: Number,
+default: 0
+},
 
-  filledSlots: {
-    type: Number,
-    default: 0
-  },
+status: {
+type: String,
+enum: [
+"upcoming",
+"live",
+"completed"
+],
+default: "upcoming"
+},
 
-  registrationOpen: {
-    type: Boolean,
-    default: true
-  },
+startTime: {
+type: Date
+},
 
-  status: {
-    type: String,
-    enum: ["Upcoming", "Live", "Completed"],
-    default: "Upcoming"
-  },
+roomId: {
+type: String,
+default: ""
+},
 
-  description: {
-    type: String,
-    default: ""
-  },
+roomPassword: {
+type: String,
+default: ""
+},
 
-  roomId: {
-    type: String,
-    default: ""
-  },
+createdBy: {
+type: mongoose.Schema.Types.ObjectId,
+ref: "User"
+},
 
-  roomPassword: {
-    type: String,
-    default: ""
-  },
+joinedPlayers: [
+{
+type: mongoose.Schema.Types.ObjectId,
+ref: "User"
+}
+],
 
-  firstPlace: {
-    type: String,
-    default: ""
-  },
+admins: [
+{
+type: mongoose.Schema.Types.ObjectId,
+ref: "User"
+}
+],
 
-  secondPlace: {
-    type: String,
-    default: ""
-  },
+resultsPublished: {
+type: Boolean,
+default: false
+},
 
-  thirdPlace: {
-    type: String,
-    default: ""
-  }
-}, {
-  timestamps: true
-});
+results: [
+{
+player: {
+type: mongoose.Schema.Types.ObjectId,
+ref: "User"
+},
+
+position: Number,
+
+kills: {
+type: Number,
+default: 0
+},
+
+points: {
+type: Number,
+default: 0
+}
+}
+],
+
+chatMessages: [
+{
+sender: {
+type: mongoose.Schema.Types.ObjectId,
+ref: "User"
+},
+
+message: String,
+
+createdAt: {
+type: Date,
+default: Date.now
+}
+}
+]
+},
+{
+timestamps: true
+}
+);
 
 module.exports = mongoose.model(
-  "Tournament",
-  TournamentSchema
+"Tournament",
+tournamentSchema
 );
