@@ -1,239 +1,295 @@
 const express = require("express");
 const Tournament = require("../models/Tournament");
 
-const {
-  verifyToken,
-  isAdmin
-} = require("../middleware/auth");
-
 const router = express.Router();
 
 /*
+
 GET ALL TOURNAMENTS
+/api/tournaments
+
 */
+
 router.get("/", async (req, res) => {
-  try {
+try {
 
-    const tournaments = await Tournament.find({});
+const tournaments =
+await Tournament.find()
+.sort({ createdAt: -1 });
 
-    res.status(200).json({
-      success: true,
-      count: tournaments.length,
-      tournaments
-    });
+res.json({
+success: true,
+count: tournaments.length,
+tournaments
+});
 
-  } catch (error) {
+} catch (error) {
+console.error(error);
 
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-
-  }
+res.status(500).json({
+success: false,
+message: "Server Error"
+});
+}
 });
 
 /*
+
 GET SINGLE TOURNAMENT
+/api/tournaments/:id
+
 */
+
 router.get("/:id", async (req, res) => {
-  try {
+try {
 
-    const tournament = await Tournament.findById(
-      req.params.id
-    );
+const tournament =
+await Tournament.findById(
+req.params.id
+);
 
-    if (!tournament) {
-      return res.status(404).json({
-        success: false,
-        message: "Tournament not found"
-      });
-    }
+if (!tournament) {
+return res.status(404).json({
+success: false,
+message: "Tournament not found"
+});
+}
 
-    res.json({
-      success: true,
-      tournament
-    });
+res.json({
+success: true,
+tournament
+});
 
-  } catch (error) {
+} catch (error) {
+console.error(error);
 
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-
-  }
+res.status(500).json({
+success: false,
+message: "Server Error"
+});
+}
 });
 
 /*
+
 CREATE TOURNAMENT
-ADMIN ONLY
+/api/tournaments/create
+
 */
-router.post(
-  "/create",
-  verifyToken,
-  isAdmin,
-  async (req, res) => {
 
-    try {
+router.post("/create", async (req, res) => {
+try {
 
-      const tournament =
-        new Tournament(req.body);
+const tournament =
+await Tournament.create({
+title: req.body.title,
+type: req.body.type,
+description:
+req.body.description,
 
-      await tournament.save();
+prizePool:
+req.body.prizePool,
 
-      res.status(201).json({
-        success: true,
-        message: "Tournament Created",
-        tournament
-      });
+entryFee:
+req.body.entryFee,
 
-    } catch (error) {
+totalSlots:
+req.body.totalSlots,
 
-      res.status(500).json({
-        success: false,
-        message: error.message
-      });
+startTime:
+req.body.startTime,
 
-    }
+roomId:
+req.body.roomId,
 
-  }
-);
+roomPassword:
+req.body.roomPassword,
+
+status: "upcoming"
+});
+
+res.status(201).json({
+success: true,
+tournament
+});
+
+} catch (error) {
+console.error(error);
+
+res.status(500).json({
+success: false,
+message:
+"Failed to create tournament"
+});
+}
+});
 
 /*
-UPDATE TOURNAMENT
-ADMIN ONLY
+
+JOIN TOURNAMENT
+/api/tournaments/join/:id
+
 */
+
+router.post("/join/:id", async (req, res) => {
+try {
+
+const tournament =
+await Tournament.findById(
+req.params.id
+);
+
+if (!tournament) {
+return res.status(404).json({
+success: false,
+message: "Tournament not found"
+});
+}
+
+if (
+tournament.filledSlots >=
+tournament.totalSlots
+) {
+return res.status(400).json({
+success: false,
+message: "Tournament Full"
+});
+}
+
+const playerId =
+req.body.playerId;
+
+if (
+tournament.joinedPlayers.includes(
+playerId
+)
+) {
+return res.status(400).json({
+success: false,
+message:
+"Already joined tournament"
+});
+}
+
+tournament.joinedPlayers.push(
+playerId
+);
+
+tournament.filledSlots += 1;
+
+await tournament.save();
+
+res.json({
+success: true,
+message:
+"Tournament Joined Successfully"
+});
+
+} catch (error) {
+console.error(error);
+
+res.status(500).json({
+success: false,
+message: "Server Error"
+});
+}
+});
+
+/*
+
+PUBLISH ROOM DETAILS
+/api/tournaments/publish-room/:id
+
+*/
+
 router.put(
-  "/update/:id",
-  verifyToken,
-  isAdmin,
-  async (req, res) => {
+"/publish-room/:id",
+async (req, res) => {
+try {
 
-    try {
+const tournament =
+await Tournament.findById(
+req.params.id
+);
 
-      const tournament =
-        await Tournament.findByIdAndUpdate(
-          req.params.id,
-          req.body,
-          { new: true }
-        );
+if (!tournament) {
+return res.status(404).json({
+success: false
+});
+}
 
-      if (!tournament) {
-        return res.status(404).json({
-          success: false,
-          message: "Tournament not found"
-        });
-      }
+tournament.roomId =
+req.body.roomId;
 
-      res.json({
-        success: true,
-        message: "Tournament Updated",
-        tournament
-      });
+tournament.roomPassword =
+req.body.roomPassword;
 
-    } catch (error) {
+await tournament.save();
 
-      res.status(500).json({
-        success: false,
-        message: error.message
-      });
+res.json({
+success: true,
+message:
+"Room Published"
+});
 
-    }
+} catch (error) {
+console.error(error);
 
-  }
+res.status(500).json({
+success: false
+});
+}
+}
 );
 
 /*
-UPDATE ROOM DETAILS
-ADMIN ONLY
-*/
-router.put(
-  "/room/:id",
-  verifyToken,
-  isAdmin,
-  async (req, res) => {
 
-    try {
-
-      const {
-        roomId,
-        roomPassword
-      } = req.body;
-
-      const tournament =
-        await Tournament.findByIdAndUpdate(
-          req.params.id,
-          {
-            roomId,
-            roomPassword
-          },
-          { new: true }
-        );
-
-      res.json({
-        success: true,
-        message: "Room Updated",
-        tournament
-      });
-
-    } catch (error) {
-
-      res.status(500).json({
-        success: false,
-        message: error.message
-      });
-
-    }
-
-  }
-);
-
-/*
 PUBLISH RESULTS
-ADMIN ONLY
+/api/tournaments/results/:id
+
 */
+
 router.put(
-  "/result/:id",
-  verifyToken,
-  isAdmin,
-  async (req, res) => {
+"/results/:id",
+async (req, res) => {
+try {
 
-    try {
+const tournament =
+await Tournament.findById(
+req.params.id
+);
 
-      const {
-        firstPlace,
-        secondPlace,
-        thirdPlace
-      } = req.body;
+if (!tournament) {
+return res.status(404).json({
+success: false
+});
+}
 
-      const tournament =
-        await Tournament.findByIdAndUpdate(
-          req.params.id,
-          {
-            firstPlace,
-            secondPlace,
-            thirdPlace,
-            status: "Completed"
-          },
-          { new: true }
-        );
+tournament.results =
+req.body.results;
 
-      res.json({
-        success: true,
-        message: "Results Published",
-        tournament
-      });
+tournament.resultsPublished =
+true;
 
-    } catch (error) {
+tournament.status =
+"completed";
 
-      res.status(500).json({
-        success: false,
-        message: error.message
-      });
+await tournament.save();
 
-    }
+res.json({
+success: true,
+message:
+"Results Published"
+});
 
-  }
+} catch (error) {
+console.error(error);
+
+res.status(500).json({
+success: false
+});
+}
+}
 );
 
 module.exports = router;
