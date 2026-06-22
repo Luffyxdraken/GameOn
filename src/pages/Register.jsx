@@ -1,5 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
+import api from "../api/axios";
+
+const res = await api.post("/auth/register", form);
 
 function Register() {
   const [form, setForm] = useState({
