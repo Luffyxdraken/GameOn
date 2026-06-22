@@ -1,89 +1,127 @@
 import { useState } from "react";
-import API from "../api/axios";
-import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Register() {
-const navigate = useNavigate();
+  const [form, setForm] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
 
-const [form, setForm] = useState({
-username: "",
-email: "",
-password: "",
-uid: ""
-});
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-const handleChange = (e) => {
-setForm({
-...form,
-[e.target.name]: e.target.value
-});
-};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-const handleSubmit = async (e) => {
-e.preventDefault();
+    try {
+      const res = await axios.post(
+        "https://YOUR_BACKEND_URL/api/auth/register",
+        form
+      );
 
-try {
-  await API.post("/auth/register", form);
+      alert("Account Created Successfully");
 
-  alert("Account Created Successfully");
+      localStorage.setItem("token", res.data.token);
 
-  navigate("/login");
-} catch (error) {
-  alert(
-    error.response?.data?.message ||
-    "Registration Failed"
+      window.location.href = "/profile";
+    } catch (err) {
+      alert(
+        err.response?.data?.message ||
+          "Registration Failed"
+      );
+    }
+  };
+
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#08142e",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          background: "#13203d",
+          padding: "30px",
+          borderRadius: "12px",
+          width: "350px",
+        }}
+      >
+        <h1
+          style={{
+            color: "#ff7b22",
+            textAlign: "center",
+          }}
+        >
+          Create Account
+        </h1>
+
+        <input
+          type="text"
+          name="username"
+          placeholder="Username"
+          onChange={handleChange}
+          required
+          style={{
+            width: "100%",
+            padding: "12px",
+            marginTop: "15px",
+          }}
+        />
+
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          onChange={handleChange}
+          required
+          style={{
+            width: "100%",
+            padding: "12px",
+            marginTop: "15px",
+          }}
+        />
+
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          onChange={handleChange}
+          required
+          style={{
+            width: "100%",
+            padding: "12px",
+            marginTop: "15px",
+          }}
+        />
+
+        <button
+          type="submit"
+          style={{
+            width: "100%",
+            padding: "12px",
+            marginTop: "20px",
+            background: "#ff7b22",
+            border: "none",
+            color: "white",
+            fontWeight: "bold",
+            cursor: "pointer",
+          }}
+        >
+          Register
+        </button>
+      </form>
+    </div>
   );
-}
-
-};
-
-return (
-<div className="register-container">
-<h1>Create Account</h1>
-
-  <form onSubmit={handleSubmit}>
-    <input
-      type="text"
-      name="username"
-      placeholder="Game Name"
-      onChange={handleChange}
-    />
-
-    <input
-      type="text"
-      name="uid"
-      placeholder="Free Fire UID"
-      onChange={handleChange}
-    />
-
-    <input
-      type="email"
-      name="email"
-      placeholder="Email"
-      onChange={handleChange}
-    />
-
-    <input
-      type="password"
-      name="password"
-      placeholder="Password"
-      onChange={handleChange}
-    />
-
-    <button type="submit">
-      Create Account
-    </button>
-  </form>
-
-  <p>
-    Already have an account?
-    <Link to="/login">
-      Login
-    </Link>
-  </p>
-</div>
-
-);
 }
 
 export default Register;
