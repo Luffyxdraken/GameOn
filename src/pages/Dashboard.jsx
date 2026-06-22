@@ -1,130 +1,111 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function Dashboard() {
-const navigate = useNavigate();
-
-const user =
-JSON.parse(localStorage.getItem("user")) || {};
-
-return (
-<div
-style={{
-minHeight: "100vh",
-background: "#0f172a",
-color: "white"
-}}
->
-{/* Top Bar */}
-<div
-style={{
-display: "flex",
-justifyContent: "space-between",
-padding: "15px 20px",
-background: "#1e293b"
-}}
->
-<h2>PR eSports</h2>
-
-    <div>
-      🔔 Notifications
-
-      <button
-        style={{
-          marginLeft: "15px"
-        }}
-        onClick={() =>
-          navigate("/profile")
-        }
-      >
-        👤 Profile
-      </button>
-    </div>
-  </div>
-
-  {/* Announcement Section */}
-  <div
-    style={{
-      padding: "20px"
-    }}
-  >
-    <h2>📢 Announcements</h2>
-
+  return (
     <div
       style={{
-        background: "#1e293b",
-        padding: "15px",
-        borderRadius: "10px"
+        minHeight: "100vh",
+        background: "#08142e",
+        color: "white",
+        paddingBottom: "80px"
       }}
     >
-      Welcome to PR eSports
+      {/* Top Bar */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          padding: "15px"
+        }}
+      >
+        <h2 style={{ color: "#ff7b22" }}>
+          PR eSports
+        </h2>
+
+        <div>
+          🔔 👤
+        </div>
+      </div>
+
+      {/* Search */}
+      <div style={{ padding: "15px" }}>
+        <input
+          placeholder="Search..."
+          style={{
+            width: "100%",
+            padding: "12px",
+            borderRadius: "15px",
+            border: "none"
+          }}
+        />
+      </div>
+
+      {/* Announcement */}
+      <div
+        style={{
+          margin: "15px",
+          padding: "15px",
+          background: "#1e293b",
+          borderRadius: "15px"
+        }}
+      >
+        📢 Latest Announcements
+      </div>
+
+      {/* Tournaments */}
+      <div
+        style={{
+          margin: "15px",
+          padding: "15px",
+          background: "#1e293b",
+          borderRadius: "15px"
+        }}
+      >
+        🏆 Solo Tournament
+      </div>
+
+      <div
+        style={{
+          margin: "15px",
+          padding: "15px",
+          background: "#1e293b",
+          borderRadius: "15px"
+        }}
+      >
+        👥 Squad Tournament
+      </div>
+
+      <div
+        style={{
+          margin: "15px",
+          padding: "15px",
+          background: "#1e293b",
+          borderRadius: "15px"
+        }}
+      >
+        ⚔ Guild War
+      </div>
+
+      {/* Bottom Nav */}
+      <div
+        style={{
+          position: "fixed",
+          bottom: 0,
+          width: "100%",
+          background: "#0f172a",
+          display: "flex",
+          justifyContent: "space-around",
+          padding: "15px"
+        }}
+      >
+        <Link to="/dashboard">🏠</Link>
+        <Link to="/messages">💬</Link>
+        <Link to="/guilds">👥</Link>
+        <Link to="/mymatches">🏆</Link>
+        <Link to="/profile">👤</Link>
+      </div>
     </div>
-  </div>
-
-  {/* User Info */}
-  <div
-    style={{
-      padding: "20px"
-    }}
-  >
-    <h3>
-      Welcome {user.username}
-    </h3>
-
-    <p>
-      Role: {user.role}
-    </p>
-  </div>
-
-  {/* Bottom Navigation */}
-  <div
-    style={{
-      position: "fixed",
-      bottom: 0,
-      left: 0,
-      right: 0,
-      background: "#1e293b",
-      display: "flex",
-      justifyContent: "space-around",
-      padding: "15px"
-    }}
-  >
-    <button>🏠 Home</button>
-
-    <button
-      onClick={() =>
-        navigate("/messages")
-      }
-    >
-      💬 Chat
-    </button>
-
-    <button
-      onClick={() =>
-        navigate("/tournaments")
-      }
-    >
-      🏆 Tournaments
-    </button>
-
-    <button
-      onClick={() =>
-        navigate("/matches")
-      }
-    >
-      🎮 Matches
-    </button>
-
-    <button
-      onClick={() =>
-        navigate("/members")
-      }
-    >
-      👥 Members
-    </button>
-  </div>
-</div>
-
-);
+  );
 }
 
 export default Dashboard;
