@@ -20,9 +20,9 @@ function Register() {
 
     try {
       const res = await axios.post(
-        "https://YOUR_BACKEND_URL/api/auth/register",
-        form
-      );
+  "https://pr-esports-gameon.onrender.com/api/auth/register",
+  form
+);
 
       alert("Account Created Successfully");
 
