@@ -33,7 +33,6 @@ fetchUsers();
 
 const removeAdmin = async (id) => {
 await axios.put(
-await axios.put(
 "https://pr-esports-gameon.onrender.com/api/users/remove-admin/${id}`
 );
 
