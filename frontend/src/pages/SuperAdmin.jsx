@@ -49,14 +49,29 @@ await axios.put(
 
 };
 
-const sendAnnouncement = () => {
-alert(
-"Announcement Sent: " +
-announcement
+const sendAnnouncement =
+async () => {
+try {
+await axios.post(
+"https://pr-esports-gameon.onrender.com/api/announcements/create",
+{
+title: "Announcement",
+message: announcement
+}
 );
 
-setAnnouncement("");
+    alert(
+      "Announcement Sent"
+    );
 
+    setAnnouncement("");
+  } catch (error) {
+    console.log(error);
+
+    alert(
+      "Announcement Failed"
+    );
+  }
 };
 
 return (
@@ -75,8 +90,6 @@ color: "#ff7b22"
 >
 👑 Super Admin Panel
 </h1>
-
-  {/* Announcement Section */}
 
   <div
     style={{
@@ -108,22 +121,25 @@ color: "#ff7b22"
     />
 
     <button
-      onClick={sendAnnouncement}
+      onClick={
+        sendAnnouncement
+      }
       style={{
         marginTop: "10px",
         background: "#ff7b22",
         color: "white",
         border: "none",
-        padding: "12px 20px",
-        borderRadius: "8px",
-        cursor: "pointer"
+        padding:
+          "12px 20px",
+        borderRadius:
+          "8px",
+        cursor:
+          "pointer"
       }}
     >
       Send Announcement
     </button>
   </div>
-
-  {/* User Management */}
 
   <div
     style={{
@@ -160,17 +176,23 @@ color: "#ff7b22"
 
         <button
           onClick={() =>
-            makeAdmin(user._id)
+            makeAdmin(
+              user._id
+            )
           }
           style={{
             background:
               "#16a34a",
-            color: "white",
-            border: "none",
+            color:
+              "white",
+            border:
+              "none",
             padding:
               "10px 15px",
-            borderRadius: "8px",
-            cursor: "pointer"
+            borderRadius:
+              "8px",
+            cursor:
+              "pointer"
           }}
         >
           Make Admin
@@ -185,14 +207,18 @@ color: "#ff7b22"
           style={{
             background:
               "#dc2626",
-            color: "white",
-            border: "none",
+            color:
+              "white",
+            border:
+              "none",
             padding:
               "10px 15px",
-            borderRadius: "8px",
+            borderRadius:
+              "8px",
             marginLeft:
               "10px",
-            cursor: "pointer"
+            cursor:
+              "pointer"
           }}
         >
           Remove Admin
