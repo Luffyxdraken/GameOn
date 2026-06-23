@@ -1,37 +1,28 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../api/axios";
 
 function Dashboard() {
-  const navigate = useNavigate();
+const navigate = useNavigate();
 
-  const user = JSON.parse(
-    localStorage.getItem("user")
+const [tournaments, setTournaments] = useState([]);
+
+useEffect(() => {
+fetchTournaments();
+}, []);
+
+const fetchTournaments = async () => {
+try {
+const res = await api.get("/tournaments");
+
+  setTournaments(
+    res.data.tournaments || []
   );
-
-  const isAdmin =
-    user?.role === "admin" ||
-    user?.role === "superadmin";
-
-  const isSuperAdmin =
-    user?.role === "superadmin";
-
-  const tournaments = [
-{
-id: 1,
-title: "Free Fire MAX Solo Cup",
-prize: 500,
-slots: "24/48",
-thumbnail:
-"https://images.unsplash.com/photo-1542751371-adc38448a05e"
-},
-{
-id: 2,
-title: "Squad Tournament",
-prize: 1000,
-slots: "18/24",
-thumbnail:
-"https://images.unsplash.com/photo-1511512578047-dfb367046420"
+} catch (err) {
+  console.log(err);
 }
-];
+
+};
 
 return (
 <div
@@ -91,65 +82,81 @@ PR eSports
 
     <p>
       Welcome to PR eSports.
-      Upcoming tournaments will be
-      displayed here.
+      Upcoming tournaments will
+      appear here.
     </p>
   </div>
 
-  {/* Featured Tournament */}
+  {/* Tournaments */}
   <div
     style={{
       margin: "15px"
     }}
   >
-    <h3>🏆 Active Tournaments</h3>
+    <h3>
+      🏆 Active Tournaments
+    </h3>
 
-    {tournaments.map((t) => (
+    {tournaments.length === 0 ? (
       <div
-        key={t.id}
         style={{
           background: "#13203d",
-          borderRadius: "12px",
-          overflow: "hidden",
-          marginBottom: "20px"
+          padding: "20px",
+          borderRadius: "12px"
         }}
       >
-        <img
-          src={t.thumbnail}
-          alt={t.title}
-          style={{
-            width: "100%",
-            height: "180px",
-            objectFit: "cover"
-          }}
-        />
-
+        No tournaments available
+      </div>
+    ) : (
+      tournaments.map((t) => (
         <div
+          key={t._id}
           style={{
-            padding: "15px"
+            background: "#13203d",
+            borderRadius: "12px",
+            overflow: "hidden",
+            marginBottom: "20px"
           }}
         >
-          <h3>{t.title}</h3>
+          <div
+            style={{
+              height: "180px",
+              background: "#1e293b"
+            }}
+          />
 
-          <p>
-            Prize Pool: ₹{t.prize}
-          </p>
-
-          <p>
-            Slots: {t.slots}
-          </p>
-
-          <button
-            onClick={() =>
-              navigate(`/tournament/${t.id}`)
-            }
-            style={actionBtn}
+          <div
+            style={{
+              padding: "15px"
+            }}
           >
-            View Tournament
-          </button>
+            <h3>{t.title}</h3>
+
+            <p>
+              Prize Pool: ₹
+              {t.prizePool}
+            </p>
+
+            <p>
+              Slots:
+              {t.filledSlots || 0}/
+              {t.totalSlots}
+            </p>
+
+            <button
+              onClick={() =>
+                navigate(
+                  `/tournament/${t._id}`
+                )
+              }
+              style={actionBtn}
+            >
+              View Tournament
+            </button>
+          </div>
         </div>
-      </div>
-    ))}
+      ))
+    )}
   </div>
 
   {/* Bottom Navigation */}
