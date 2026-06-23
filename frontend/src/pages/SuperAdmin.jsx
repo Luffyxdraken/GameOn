@@ -24,29 +24,29 @@ const res = await axios.get(
 };
 
 const makeAdmin = async (id) => {
-try {
-await axios.put(
-"https://pr-esports-gameon.onrender.com/api/users/make-admin/${id}"
-);
+  try {
+    await axios.put(
+      `https://pr-esports-gameon.onrender.com/api/users/make-admin/${id}`
+    );
 
-  fetchUsers();
-} catch (error) {
-  console.log(error);
-}
-
+    alert("Admin created");
+    fetchUsers();
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 const removeAdmin = async (id) => {
-try {
-await axios.put(
-"https://pr-esports-gameon.onrender.com/api/users/remove-admin/${id}"
-);
+  try {
+    await axios.put(
+      `https://pr-esports-gameon.onrender.com/api/users/remove-admin/${id}`
+    );
 
-  fetchUsers();
-} catch (error) {
-  console.log(error);
-}
-
+    alert("Admin removed");
+    fetchUsers();
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 const sendAnnouncement =
