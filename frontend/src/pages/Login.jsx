@@ -33,8 +33,6 @@ function Login() {
 JSON.stringify(res.data.user)
 );
 
-navigate("/dashboard");
-
       // Super Admin Account
       if (
         form.email === "luffy@world.com" &&
