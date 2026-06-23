@@ -29,9 +29,11 @@ function Login() {
       );
 
       localStorage.setItem(
-        "user",
-        JSON.stringify(res.data.user)
-      );
+"user",
+JSON.stringify(res.data.user)
+);
+
+navigate("/dashboard");
 
       // Super Admin Account
       if (
