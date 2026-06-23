@@ -1,9 +1,16 @@
 function Messages() {
-  return (
-    <div>
-      <h1>Global Chat</h1>
-    </div>
-  );
+return (
+<div
+style={{
+minHeight: "100vh",
+background: "#08142e",
+color: "white",
+padding: "20px"
+}}
+>
+<h1>Messages Page</h1>
+</div>
+);
 }
 
 export default Messages;
