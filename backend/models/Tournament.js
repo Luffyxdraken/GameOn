@@ -1,105 +1,67 @@
 const mongoose = require("mongoose");
 
-const tournamentSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
 {
-title: {
+username: {
+type: String,
+required: true,
+trim: true
+},
+
+email: {
+type: String,
+required: true,
+unique: true,
+lowercase: true
+},
+
+password: {
 type: String,
 required: true
 },
 
-type: {
+uid: {
+type: String,
+default: ""
+},
+
+profilePhoto: {
+type: String,
+default: ""
+},
+
+bio: {
+type: String,
+default: ""
+},
+
+role: {
 type: String,
 enum: [
-"solo",
-"squad",
-"guildwar"
+"player",
+"admin",
+"superadmin"
 ],
-default: "solo"
+default: "player"
 },
 
-description: {
-type: String,
-default: ""
+guild: {
+type: mongoose.Schema.Types.ObjectId,
+ref: "Guild",
+default: null
 },
 
-prizePool: {
+matchesPlayed: {
 type: Number,
 default: 0
 },
-
-entryFee: {
-type: Number,
-default: 0
-},
-
-totalSlots: {
-type: Number,
-default: 12
-},
-
-filledSlots: {
-type: Number,
-default: 0
-},
-
-status: {
-type: String,
-enum: [
-"upcoming",
-"live",
-"completed"
-],
-default: "upcoming"
-},
-
-startTime: {
-type: Date
-},
-
-roomId: {
-type: String,
-default: ""
-},
-
-roomPassword: {
-type: String,
-default: ""
-},
-
-createdBy: {
-type: mongoose.Schema.Types.ObjectId,
-ref: "User"
-},
-
-joinedPlayers: [
-{
-type: mongoose.Schema.Types.ObjectId,
-ref: "User"
-}
-],
-
-admins: [
-{
-type: mongoose.Schema.Types.ObjectId,
-ref: "User"
-}
-],
-
-resultsPublished: {
-type: Boolean,
-default: false
-},
-
-results: [
-{
-player: {
-type: mongoose.Schema.Types.ObjectId,
-ref: "User"
-},
-
-position: Number,
 
 kills: {
+type: Number,
+default: 0
+},
+
+wins: {
 type: Number,
 default: 0
 },
@@ -107,24 +69,28 @@ default: 0
 points: {
 type: Number,
 default: 0
-}
-}
-],
-
-chatMessages: [
-{
-sender: {
-type: mongoose.Schema.Types.ObjectId,
-ref: "User"
 },
 
+kd: {
+type: Number,
+default: 0
+},
+
+notifications: [
+{
 message: String,
 
-createdAt: {
-type: Date,
-default: Date.now
+  read: {
+    type: Boolean,
+    default: false
+  },
+
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 }
-}
+
 ]
 },
 {
@@ -133,6 +99,6 @@ timestamps: true
 );
 
 module.exports = mongoose.model(
-"Tournament",
-tournamentSchema
+"User",
+userSchema
 );
