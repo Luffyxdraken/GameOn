@@ -30,6 +30,39 @@ res.status(500).json({
 });
 
 /*
+GET SINGLE USER PROFILE
+*/
+router.get("/:id", async (req, res) => {
+try {
+
+const user =
+  await User.findById(
+    req.params.id
+  ).select("-password");
+
+if (!user) {
+  return res.status(404).json({
+    success: false,
+    message: "User not found"
+  });
+}
+
+res.json({
+  success: true,
+  user
+});
+
+} catch (error) {
+
+res.status(500).json({
+  success: false,
+  message: "Server Error"
+});
+
+}
+});
+
+/*
 MAKE ADMIN
 */
 router.put(
