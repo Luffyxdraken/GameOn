@@ -3,24 +3,19 @@ import api from "../api/axios";
 
 function Admin() {
 
-const [tournaments,
-setTournaments] =
+const [tournaments, setTournaments] =
 useState([]);
 
-const [title,
-setTitle] =
+const [title, setTitle] =
 useState("");
 
-const [type,
-setType] =
+const [type, setType] =
 useState("solo");
 
-const [prizePool,
-setPrizePool] =
+const [prizePool, setPrizePool] =
 useState("");
 
-const [slots,
-setSlots] =
+const [slots, setSlots] =
 useState("");
 
 useEffect(() => {
@@ -29,68 +24,119 @@ fetchTournaments();
 
 const fetchTournaments =
 async () => {
-try {
+const res =
+await api.get(
+"/tournaments"
+);
 
-    const res =
-      await api.get(
-        "/tournaments"
-      );
-
-    setTournaments(
-      res.data.tournaments || []
-    );
-
-  } catch (err) {
-    console.log(err);
-  }
+  setTournaments(
+    res.data.tournaments || []
+  );
 };
 
 const createTournament =
 async () => {
-try {
 
-    await api.post(
-      "/tournaments/create",
-      {
-        title,
-        type,
-        prizePool,
-        totalSlots: slots
-      }
+  await api.post(
+    "/tournaments/create",
+    {
+      title,
+      type,
+      prizePool,
+      totalSlots: slots
+    }
+  );
+
+  fetchTournaments();
+};
+
+const publishRoom =
+async (id) => {
+
+  const roomId =
+    prompt(
+      "Room ID"
     );
 
-    alert(
-      "Tournament Created"
+  const roomPassword =
+    prompt(
+      "Room Password"
     );
 
-    setTitle("");
-    setPrizePool("");
-    setSlots("");
+  await api.put(
+    `/tournaments/publish-room/${id}`,
+    {
+      roomId,
+      roomPassword
+    }
+  );
 
-    fetchTournaments();
+  alert(
+    "Room Published"
+  );
 
-  } catch (err) {
-    console.log(err);
-  }
+  fetchTournaments();
+};
+
+const publishResults =
+async (id) => {
+
+  const winner =
+    prompt(
+      "Winner Name"
+    );
+
+  await api.put(
+    `/tournaments/results/${id}`,
+    {
+      results: [
+        {
+          winner
+        }
+      ]
+    }
+  );
+
+  alert(
+    "Results Published"
+  );
+
+  fetchTournaments();
+};
+
+const deleteTournament =
+async (id) => {
+
+  if (
+    !window.confirm(
+      "Delete Tournament?"
+    )
+  )
+    return;
+
+  await api.delete(
+    `/tournaments/${id}`
+  );
+
+  alert(
+    "Tournament Deleted"
+  );
+
+  fetchTournaments();
 };
 
 return (
 <div
 style={{
-minHeight:
-"100vh",
-background:
-"#08142e",
-color:
-"white",
-padding:
-"20px"
+minHeight: "100vh",
+background: "#08142e",
+color: "white",
+padding: "20px"
 }}
 >
 <h1
 style={{
-color:
-"#ff7b22"
+color: "#ff7b22"
 }}
 >
 🛠 Admin Panel
@@ -98,37 +144,23 @@ color:
 
   <div
     style={{
-      background:
-        "#13203d",
-      padding:
-        "15px",
-      borderRadius:
-        "12px",
-      marginTop:
-        "20px"
+      background: "#13203d",
+      padding: "20px",
+      borderRadius: "12px"
     }}
   >
-    <h2>
-      ➕ Create Tournament
-    </h2>
-
     <input
-      placeholder="Title"
+      placeholder="Tournament Title"
       value={title}
       onChange={(e) =>
         setTitle(
           e.target.value
         )
       }
-      style={{
-        width:
-          "100%",
-        padding:
-          "10px",
-        marginTop:
-          "10px"
-      }}
     />
+
+    <br />
+    <br />
 
     <select
       value={type}
@@ -137,14 +169,6 @@ color:
           e.target.value
         )
       }
-      style={{
-        width:
-          "100%",
-        padding:
-          "10px",
-        marginTop:
-          "10px"
-      }}
     >
       <option value="solo">
         Solo
@@ -159,6 +183,9 @@ color:
       </option>
     </select>
 
+    <br />
+    <br />
+
     <input
       placeholder="Prize Pool"
       value={prizePool}
@@ -167,15 +194,10 @@ color:
           e.target.value
         )
       }
-      style={{
-        width:
-          "100%",
-        padding:
-          "10px",
-        marginTop:
-          "10px"
-      }}
     />
+
+    <br />
+    <br />
 
     <input
       placeholder="Slots"
@@ -185,91 +207,104 @@ color:
           e.target.value
         )
       }
-      style={{
-        width:
-          "100%",
-        padding:
-          "10px",
-        marginTop:
-          "10px"
-      }}
     />
+
+    <br />
+    <br />
 
     <button
       onClick={
         createTournament
       }
-      style={{
-        background:
-          "#ff7b22",
-        color:
-          "white",
-        border:
-          "none",
-        padding:
-          "12px 20px",
-        borderRadius:
-          "8px",
-        marginTop:
-          "10px"
-      }}
     >
       Create Tournament
     </button>
   </div>
 
-  <div
+  <h2
     style={{
-      marginTop:
-        "25px"
+      marginTop: "30px"
     }}
   >
-    <h2>
-      🏆 Existing Tournaments
-    </h2>
+    Existing Tournaments
+  </h2>
 
-    {tournaments.map(
-      (t) => (
-        <div
-          key={t._id}
+  {tournaments.map(
+    (t) => (
+      <div
+        key={t._id}
+        style={{
+          background:
+            "#13203d",
+          padding:
+            "15px",
+          borderRadius:
+            "12px",
+          marginTop:
+            "15px"
+        }}
+      >
+        <h3>
+          {t.title}
+        </h3>
+
+        <p>
+          {t.type}
+        </p>
+
+        <p>
+          ₹
+          {t.prizePool}
+        </p>
+
+        <p>
+          {t.status}
+        </p>
+
+        <button
+          onClick={() =>
+            publishRoom(
+              t._id
+            )
+          }
+        >
+          Publish Room
+        </button>
+
+        <button
+          onClick={() =>
+            publishResults(
+              t._id
+            )
+          }
           style={{
-            background:
-              "#13203d",
-            padding:
-              "15px",
-            borderRadius:
-              "12px",
-            marginTop:
-              "15px"
+            marginLeft:
+              "10px"
           }}
         >
-          <h3>
-            {t.title}
-          </h3>
+          Publish Results
+        </button>
 
-          <p>
-            Type:
-            {" "}
-            {t.type}
-          </p>
-
-          <p>
-            Prize:
-            ₹
-            {
-              t.prizePool
-            }
-          </p>
-
-          <p>
-            Status:
-            {" "}
-            {t.status}
-          </p>
-        </div>
-      )
-    )}
-  </div>
+        <button
+          onClick={() =>
+            deleteTournament(
+              t._id
+            )
+          }
+          style={{
+            marginLeft:
+              "10px",
+            background:
+              "red",
+            color:
+              "white"
+          }}
+        >
+          Delete
+        </button>
+      </div>
+    )
+  )}
 </div>
 
 );
