@@ -3,6 +3,8 @@ import axios from "axios";
 
 function SuperAdmin() {
 const [users, setUsers] = useState([]);
+const [announcement, setAnnouncement] =
+useState("");
 
 useEffect(() => {
 fetchUsers();
@@ -15,7 +17,6 @@ const res = await axios.get(
 );
 
   setUsers(res.data.users);
-
 } catch (error) {
   console.log(error);
 }
@@ -23,20 +24,38 @@ const res = await axios.get(
 };
 
 const makeAdmin = async (id) => {
+try {
 await axios.put(
-`https://pr-esports-gameon.onrender.com/api/users/make-admin/${id}`
+"https://pr-esports-gameon.onrender.com/api/users/make-admin/${id}"
 );
 
-fetchUsers();
+  fetchUsers();
+} catch (error) {
+  console.log(error);
+}
 
 };
 
 const removeAdmin = async (id) => {
+try {
 await axios.put(
-`https://pr-esports-gameon.onrender.com/api/users/remove-admin/${id}`
+"https://pr-esports-gameon.onrender.com/api/users/remove-admin/${id}"
 );
 
-fetchUsers();
+  fetchUsers();
+} catch (error) {
+  console.log(error);
+}
+
+};
+
+const sendAnnouncement = () => {
+alert(
+"Announcement Sent: " +
+announcement
+);
+
+setAnnouncement("");
 
 };
 
@@ -54,47 +73,133 @@ style={{
 color: "#ff7b22"
 }}
 >
-Super Admin Panel
+👑 Super Admin Panel
 </h1>
 
-  {users.map((user) => (
-    <div
-      key={user._id}
+  {/* Announcement Section */}
+
+  <div
+    style={{
+      background: "#13203d",
+      padding: "20px",
+      borderRadius: "12px",
+      marginTop: "20px"
+    }}
+  >
+    <h2>
+      📢 Global Announcement
+    </h2>
+
+    <textarea
+      value={announcement}
+      onChange={(e) =>
+        setAnnouncement(
+          e.target.value
+        )
+      }
+      placeholder="Write announcement..."
       style={{
-        background: "#13203d",
-        marginTop: "15px",
-        padding: "15px",
-        borderRadius: "12px"
+        width: "100%",
+        height: "100px",
+        marginTop: "10px",
+        borderRadius: "8px",
+        padding: "10px"
+      }}
+    />
+
+    <button
+      onClick={sendAnnouncement}
+      style={{
+        marginTop: "10px",
+        background: "#ff7b22",
+        color: "white",
+        border: "none",
+        padding: "12px 20px",
+        borderRadius: "8px",
+        cursor: "pointer"
       }}
     >
-      <h3>{user.username}</h3>
+      Send Announcement
+    </button>
+  </div>
 
-      <p>{user.email}</p>
+  {/* User Management */}
 
-      <p>
-        Role: {user.role}
-      </p>
+  <div
+    style={{
+      marginTop: "30px"
+    }}
+  >
+    <h2>
+      👥 User Management
+    </h2>
 
-      <button
-        onClick={() =>
-          makeAdmin(user._id)
-        }
-      >
-        Make Admin
-      </button>
-
-      <button
-        onClick={() =>
-          removeAdmin(user._id)
-        }
+    {users.map((user) => (
+      <div
+        key={user._id}
         style={{
-          marginLeft: "10px"
+          background: "#13203d",
+          marginTop: "15px",
+          padding: "15px",
+          borderRadius: "12px"
         }}
       >
-        Remove Admin
-      </button>
-    </div>
-  ))}
+        <h3>
+          {user.username}
+        </h3>
+
+        <p>
+          {user.email}
+        </p>
+
+        <p>
+          Role:
+          {" "}
+          {user.role}
+        </p>
+
+        <button
+          onClick={() =>
+            makeAdmin(user._id)
+          }
+          style={{
+            background:
+              "#16a34a",
+            color: "white",
+            border: "none",
+            padding:
+              "10px 15px",
+            borderRadius: "8px",
+            cursor: "pointer"
+          }}
+        >
+          Make Admin
+        </button>
+
+        <button
+          onClick={() =>
+            removeAdmin(
+              user._id
+            )
+          }
+          style={{
+            background:
+              "#dc2626",
+            color: "white",
+            border: "none",
+            padding:
+              "10px 15px",
+            borderRadius: "8px",
+            marginLeft:
+              "10px",
+            cursor: "pointer"
+          }}
+        >
+          Remove Admin
+        </button>
+      </div>
+    ))}
+  </div>
 </div>
 
 );
