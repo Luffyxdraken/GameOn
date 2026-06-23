@@ -1,168 +1,63 @@
 const express = require("express");
-
 const Announcement = require("../models/Announcement");
-
-const {
-  verifyToken,
-  isAdmin
-} = require("../middleware/auth");
 
 const router = express.Router();
 
 /*
 GET ALL ANNOUNCEMENTS
+/api/announcements
 */
+
 router.get("/", async (req, res) => {
+try {
 
-  try {
+const announcements =
+  await Announcement.find()
+  .sort({ createdAt: -1 });
 
-    const announcements =
-      await Announcement.find()
-      .sort({ createdAt: -1 });
-
-    res.json(announcements);
-
-  } catch (error) {
-
-    res.status(500).json({
-      message: error.message
-    });
-
-  }
-
+res.json({
+  success: true,
+  announcements
 });
 
-/*
-GET PINNED ANNOUNCEMENT
-*/
-router.get("/pinned", async (req, res) => {
+} catch (error) {
 
-  try {
+res.status(500).json({
+  success: false,
+  message: "Server Error"
+});
 
-    const announcement =
-      await Announcement.findOne({
-        isPinned: true
-      });
-
-    res.json(announcement);
-
-  } catch (error) {
-
-    res.status(500).json({
-      message: error.message
-    });
-
-  }
-
+}
 });
 
 /*
 CREATE ANNOUNCEMENT
-ADMIN ONLY
+/api/announcements/create
 */
-router.post(
-  "/create",
-  verifyToken,
-  isAdmin,
-  async (req, res) => {
 
-    try {
+router.post("/create", async (req, res) => {
+try {
 
-      const {
-        title,
-        message,
-        isPinned
-      } = req.body;
+const announcement =
+  await Announcement.create({
+    title: req.body.title,
+    message: req.body.message
+  });
 
-      const announcement =
-        new Announcement({
-          title,
-          message,
-          isPinned
-        });
+res.json({
+  success: true,
+  announcement
+});
 
-      await announcement.save();
+} catch (error) {
 
-      res.status(201).json({
-        message: "Announcement Created",
-        announcement
-      });
+res.status(500).json({
+  success: false,
+  message:
+    "Failed to create announcement"
+});
 
-    } catch (error) {
-
-      res.status(500).json({
-        message: error.message
-      });
-
-    }
-
-  }
-);
-
-/*
-UPDATE ANNOUNCEMENT
-ADMIN ONLY
-*/
-router.put(
-  "/update/:id",
-  verifyToken,
-  isAdmin,
-  async (req, res) => {
-
-    try {
-
-      const announcement =
-        await Announcement.findByIdAndUpdate(
-          req.params.id,
-          req.body,
-          { new: true }
-        );
-
-      res.json({
-        message: "Announcement Updated",
-        announcement
-      });
-
-    } catch (error) {
-
-      res.status(500).json({
-        message: error.message
-      });
-
-    }
-
-  }
-);
-
-/*
-DELETE ANNOUNCEMENT
-ADMIN ONLY
-*/
-router.delete(
-  "/delete/:id",
-  verifyToken,
-  isAdmin,
-  async (req, res) => {
-
-    try {
-
-      await Announcement.findByIdAndDelete(
-        req.params.id
-      );
-
-      res.json({
-        message: "Announcement Deleted"
-      });
-
-    } catch (error) {
-
-      res.status(500).json({
-        message: error.message
-      });
-
-    }
-
-  }
-);
+}
+});
 
 module.exports = router;
