@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 
 function Register() {
+const navigate = useNavigate();
+
 const [form, setForm] = useState({
 username: "",
 email: "",
@@ -31,7 +34,13 @@ try {
     res.data.token
   );
 
-  window.location.href = "/";
+  localStorage.setItem(
+    "user",
+    JSON.stringify(res.data.user)
+  );
+
+  navigate("/dashboard");
+
 } catch (err) {
   alert(
     err.response?.data?.message ||
