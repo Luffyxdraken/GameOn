@@ -4,8 +4,42 @@ const User = require("../models/User");
 const router = express.Router();
 
 /*
-GET ALL USERS
+GET LEADERBOARD
+/api/users/leaderboard
 */
+
+router.get(
+"/leaderboard",
+async (req, res) => {
+try {
+
+const players =
+  await User.find()
+  .select("-password")
+  .sort({
+    points: -1
+  });
+
+res.json({
+  success: true,
+  players
+});
+
+} catch (error) {
+
+res.status(500).json({
+  success: false,
+  message: "Server Error"
+});
+
+}
+});
+
+/*
+GET ALL USERS
+/api/users
+*/
+
 router.get("/", async (req, res) => {
 try {
 
@@ -30,8 +64,10 @@ res.status(500).json({
 });
 
 /*
-GET SINGLE USER PROFILE
+GET SINGLE USER
+/api/users/:id
 */
+
 router.get("/:id", async (req, res) => {
 try {
 
@@ -64,7 +100,9 @@ res.status(500).json({
 
 /*
 MAKE ADMIN
+/api/users/make-admin/:id
 */
+
 router.put(
 "/make-admin/:id",
 async (req, res) => {
@@ -88,7 +126,7 @@ await user.save();
 res.json({
   success: true,
   message:
-  "User promoted to admin"
+    "User promoted to admin"
 });
 
 } catch (error) {
@@ -102,7 +140,9 @@ res.status(500).json({
 
 /*
 REMOVE ADMIN
+/api/users/remove-admin/:id
 */
+
 router.put(
 "/remove-admin/:id",
 async (req, res) => {
@@ -126,7 +166,7 @@ await user.save();
 res.json({
   success: true,
   message:
-  "Admin removed"
+    "Admin removed"
 });
 
 } catch (error) {
