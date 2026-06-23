@@ -60,9 +60,13 @@ PR eSports
         Home
       </button>
 
-      <button>
-        Announcements
-      </button>
+      <button
+  onClick={() =>
+    navigate("/announcements")
+  }
+>
+  Announcements
+</button>
 
       <button>
         Chat
