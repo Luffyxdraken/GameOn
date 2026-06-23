@@ -1,9 +1,20 @@
 import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
-const tournaments = [
+  const user = JSON.parse(
+    localStorage.getItem("user")
+  );
+
+  const isAdmin =
+    user?.role === "admin" ||
+    user?.role === "superadmin";
+
+  const isSuperAdmin =
+    user?.role === "superadmin";
+
+  const tournaments = [
 {
 id: 1,
 title: "Free Fire MAX Solo Cup",
