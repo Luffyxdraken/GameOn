@@ -1,111 +1,233 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
-  return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "#08142e",
-        color: "white",
-        paddingBottom: "80px"
-      }}
-    >
-      {/* Top Bar */}
+const navigate = useNavigate();
+
+const tournaments = [
+{
+id: 1,
+title: "Free Fire MAX Solo Cup",
+prize: 500,
+slots: "24/48",
+thumbnail:
+"https://images.unsplash.com/photo-1542751371-adc38448a05e"
+},
+{
+id: 2,
+title: "Squad Tournament",
+prize: 1000,
+slots: "18/24",
+thumbnail:
+"https://images.unsplash.com/photo-1511512578047-dfb367046420"
+}
+];
+
+return (
+<div
+style={{
+minHeight: "100vh",
+background: "#08142e",
+color: "white",
+paddingBottom: "80px"
+}}
+>
+{/* Top Bar */}
+<div
+style={{
+display: "flex",
+justifyContent: "space-between",
+alignItems: "center",
+padding: "15px"
+}}
+>
+<h2 style={{ color: "#ff7b22" }}>
+PR eSports
+</h2>
+
+    <div>
+      <button
+        onClick={() =>
+          navigate("/notifications")
+        }
+        style={topBtn}
+      >
+        🔔
+      </button>
+
+      <button
+        onClick={() =>
+          navigate("/profile")
+        }
+        style={topBtn}
+      >
+        👤
+      </button>
+    </div>
+  </div>
+
+  {/* Announcements */}
+  <div
+    style={{
+      margin: "15px",
+      background: "#13203d",
+      padding: "15px",
+      borderRadius: "12px"
+    }}
+  >
+    <h3 style={{ color: "#ff7b22" }}>
+      📢 Announcements
+    </h3>
+
+    <p>
+      Welcome to PR eSports.
+      Upcoming tournaments will be
+      displayed here.
+    </p>
+  </div>
+
+  {/* Featured Tournament */}
+  <div
+    style={{
+      margin: "15px"
+    }}
+  >
+    <h3>🏆 Active Tournaments</h3>
+
+    {tournaments.map((t) => (
       <div
+        key={t.id}
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          padding: "15px"
+          background: "#13203d",
+          borderRadius: "12px",
+          overflow: "hidden",
+          marginBottom: "20px"
         }}
       >
-        <h2 style={{ color: "#ff7b22" }}>
-          PR eSports
-        </h2>
-
-        <div>
-          🔔 👤
-        </div>
-      </div>
-
-      {/* Search */}
-      <div style={{ padding: "15px" }}>
-        <input
-          placeholder="Search..."
+        <img
+          src={t.thumbnail}
+          alt={t.title}
           style={{
             width: "100%",
-            padding: "12px",
-            borderRadius: "15px",
-            border: "none"
+            height: "180px",
+            objectFit: "cover"
           }}
         />
-      </div>
 
-      {/* Announcement */}
-      <div
-        style={{
-          margin: "15px",
-          padding: "15px",
-          background: "#1e293b",
-          borderRadius: "15px"
-        }}
-      >
-        📢 Latest Announcements
-      </div>
+        <div
+          style={{
+            padding: "15px"
+          }}
+        >
+          <h3>{t.title}</h3>
 
-      {/* Tournaments */}
-      <div
-        style={{
-          margin: "15px",
-          padding: "15px",
-          background: "#1e293b",
-          borderRadius: "15px"
-        }}
-      >
-        🏆 Solo Tournament
-      </div>
+          <p>
+            Prize Pool: ₹{t.prize}
+          </p>
 
-      <div
-        style={{
-          margin: "15px",
-          padding: "15px",
-          background: "#1e293b",
-          borderRadius: "15px"
-        }}
-      >
-        👥 Squad Tournament
-      </div>
+          <p>
+            Slots: {t.slots}
+          </p>
 
-      <div
-        style={{
-          margin: "15px",
-          padding: "15px",
-          background: "#1e293b",
-          borderRadius: "15px"
-        }}
-      >
-        ⚔ Guild War
+          <button
+            onClick={() =>
+              navigate(`/tournament/${t.id}`)
+            }
+            style={actionBtn}
+          >
+            View Tournament
+          </button>
+        </div>
       </div>
+    ))}
+  </div>
 
-      {/* Bottom Nav */}
-      <div
-        style={{
-          position: "fixed",
-          bottom: 0,
-          width: "100%",
-          background: "#0f172a",
-          display: "flex",
-          justifyContent: "space-around",
-          padding: "15px"
-        }}
-      >
-        <Link to="/dashboard">🏠</Link>
-        <Link to="/messages">💬</Link>
-        <Link to="/guilds">👥</Link>
-        <Link to="/mymatches">🏆</Link>
-        <Link to="/profile">👤</Link>
-      </div>
-    </div>
-  );
+  {/* Bottom Navigation */}
+  <div
+    style={{
+      position: "fixed",
+      bottom: 0,
+      left: 0,
+      right: 0,
+      background: "#13203d",
+      display: "flex",
+      justifyContent: "space-around",
+      padding: "12px"
+    }}
+  >
+    <button
+      style={navBtn}
+      onClick={() =>
+        navigate("/dashboard")
+      }
+    >
+      🏠
+    </button>
+
+    <button
+      style={navBtn}
+      onClick={() =>
+        navigate("/messages")
+      }
+    >
+      💬
+    </button>
+
+    <button
+      style={navBtn}
+      onClick={() =>
+        navigate("/members")
+      }
+    >
+      👥
+    </button>
+
+    <button
+      style={navBtn}
+      onClick={() =>
+        navigate("/mymatches")
+      }
+    >
+      🎮
+    </button>
+
+    <button
+      style={navBtn}
+      onClick={() =>
+        navigate("/guilds")
+      }
+    >
+      🛡
+    </button>
+  </div>
+</div>
+
+);
 }
+
+const navBtn = {
+background: "transparent",
+border: "none",
+color: "white",
+fontSize: "22px",
+cursor: "pointer"
+};
+
+const topBtn = {
+background: "#ff7b22",
+border: "none",
+marginLeft: "8px",
+padding: "10px",
+borderRadius: "50%",
+cursor: "pointer"
+};
+
+const actionBtn = {
+background: "#ff7b22",
+color: "white",
+border: "none",
+padding: "10px 15px",
+borderRadius: "8px",
+cursor: "pointer"
+};
 
 export default Dashboard;
