@@ -1,32 +1,20 @@
 const mongoose = require("mongoose");
 
-const announcementSchema = new mongoose.Schema({
+const AnnouncementSchema =
+new mongoose.Schema(
+{
+title: String,
+message: String,
 
-  title: {
-    type: String,
-    required: true
-  },
+createdAt: {
+type: Date,
+default: Date.now
+}
+}
+);
 
-  message: {
-    type: String,
-    required: true
-  },
-
-  createdBy: {
-    type: String,
-    default: "Admin"
-  },
-
-  isPinned: {
-    type: Boolean,
-    default: false
-  }
-
-}, {
-  timestamps: true
-});
-
-module.exports = mongoose.model(
-  "Announcement",
-  announcementSchema
+module.exports =
+mongoose.model(
+"Announcement",
+AnnouncementSchema
 );
