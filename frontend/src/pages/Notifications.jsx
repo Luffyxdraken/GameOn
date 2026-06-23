@@ -1,9 +1,16 @@
 function Notifications() {
-  return (
-    <div>
-      <h1>Notifications</h1>
-    </div>
-  );
+return (
+<div
+style={{
+minHeight: "100vh",
+background: "#08142e",
+color: "white",
+padding: "20px"
+}}
+>
+<h1>Notifications Page</h1>
+</div>
+);
 }
 
 export default Notifications;
