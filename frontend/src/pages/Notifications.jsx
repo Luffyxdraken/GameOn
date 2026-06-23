@@ -1,30 +1,33 @@
+import { useEffect, useState } from "react";
+import api from "../api/axios";
+
 function Notifications() {
-const notifications = [
-{
-id: 1,
-title: "Tournament Reminder",
-message:
-"Free Fire MAX Solo Cup starts in 1 hour."
-},
-{
-id: 2,
-title: "Room Details Published",
-message:
-"Room ID and Password are now available."
-},
-{
-id: 3,
-title: "Guild Invitation",
-message:
-"Lost Pirates invited you to join."
-},
-{
-id: 4,
-title: "Admin Announcement",
-message:
-"New Squad Tournament announced."
-}
-];
+
+const [announcements,
+setAnnouncements] =
+useState([]);
+
+useEffect(() => {
+fetchNotifications();
+}, []);
+
+const fetchNotifications =
+async () => {
+try {
+
+    const res =
+      await api.get(
+        "/announcements"
+      );
+
+    setAnnouncements(
+      res.data.announcements || []
+    );
+
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 return (
 <div
@@ -48,25 +51,42 @@ color: "#ff7b22"
       marginTop: "20px"
     }}
   >
-    {notifications.map((item) => (
+    {announcements.length === 0 ? (
+
       <div
-        key={item.id}
         style={{
           background: "#13203d",
           padding: "15px",
-          borderRadius: "12px",
-          marginBottom: "15px"
+          borderRadius: "12px"
         }}
       >
-        <h3>
-          {item.title}
-        </h3>
-
-        <p>
-          {item.message}
-        </p>
+        No Notifications Yet
       </div>
-    ))}
+
+    ) : (
+
+      announcements.map((item) => (
+        <div
+          key={item._id}
+          style={{
+            background: "#13203d",
+            padding: "15px",
+            borderRadius: "12px",
+            marginBottom: "15px"
+          }}
+        >
+          <h3>
+            {item.title}
+          </h3>
+
+          <p>
+            {item.message}
+          </p>
+
+        </div>
+      ))
+
+    )}
   </div>
 </div>
 
