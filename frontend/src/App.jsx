@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Members from "./pages/Members";
 import Messages from "./pages/Messages";
@@ -19,19 +18,51 @@ return (
 <BrowserRouter>
 <Routes>
 
-    {/* Public Pages */}
-    <Route path="/" element={<Home />} />
-    <Route path="/login" element={<Login />} />
-    <Route path="/register" element={<Register />} />
+    {/* First Page */}
+    <Route path="/" element={<Login />} />
 
-    {/* User Dashboard */}
-    <Route path="/dashboard" element={<Dashboard />} />
-    <Route path="/profile" element={<Profile />} />
-    <Route path="/members" element={<Members />} />
-    <Route path="/messages" element={<Messages />} />
-    <Route path="/guilds" element={<Guilds />} />
-    <Route path="/mymatches" element={<MyMatches />} />
-    <Route path="/notifications" element={<Notifications />} />
+    {/* Register */}
+    <Route
+      path="/register"
+      element={<Register />}
+    />
+
+    {/* Main Platform */}
+    <Route
+      path="/dashboard"
+      element={<Home />}
+    />
+
+    {/* User Pages */}
+    <Route
+      path="/profile"
+      element={<Profile />}
+    />
+
+    <Route
+      path="/members"
+      element={<Members />}
+    />
+
+    <Route
+      path="/messages"
+      element={<Messages />}
+    />
+
+    <Route
+      path="/guilds"
+      element={<Guilds />}
+    />
+
+    <Route
+      path="/mymatches"
+      element={<MyMatches />}
+    />
+
+    <Route
+      path="/notifications"
+      element={<Notifications />}
+    />
 
     {/* Tournament */}
     <Route
@@ -40,7 +71,12 @@ return (
     />
 
     {/* Admin */}
-    <Route path="/admin" element={<Admin />} />
+    <Route
+      path="/admin"
+      element={<Admin />}
+    />
+
+    {/* Super Admin */}
     <Route
       path="/superadmin"
       element={<SuperAdmin />}
