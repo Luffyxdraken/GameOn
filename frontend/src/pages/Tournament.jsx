@@ -8,9 +8,73 @@ const { id } = useParams();
 const [tournament, setTournament] =
 useState(null);
 
+const [timeLeft, setTimeLeft] =
+useState("");
+
 useEffect(() => {
 fetchTournament();
 }, []);
+
+useEffect(() => {
+if (!tournament?.startTime) return;
+
+const interval = setInterval(() => {
+  const now = new Date().getTime();
+
+  const target = new Date(
+    tournament.startTime
+  ).getTime();
+
+  const distance =
+    target - now;
+
+  if (distance <= 0) {
+    setTimeLeft(
+      "Tournament Started"
+    );
+    clearInterval(interval);
+    return;
+  }
+
+  const days = Math.floor(
+    distance /
+      (1000 * 60 * 60 * 24)
+  );
+
+  const hours = Math.floor(
+    (distance %
+      (1000 *
+        60 *
+        60 *
+        24)) /
+      (1000 * 60 * 60)
+  );
+
+  const minutes =
+    Math.floor(
+      (distance %
+        (1000 *
+          60 *
+          60)) /
+        (1000 * 60)
+    );
+
+  const seconds =
+    Math.floor(
+      (distance %
+        (1000 * 60)) /
+        1000
+    );
+
+  setTimeLeft(
+    `${days}d ${hours}h ${minutes}m ${seconds}s`
+  );
+}, 1000);
+
+return () =>
+  clearInterval(interval);
+
+}, [tournament]);
 
 const fetchTournament =
 async () => {
@@ -47,7 +111,7 @@ localStorage.getItem(
     );
 
     alert(
-      "Joined Tournament"
+      "Joined Tournament Successfully"
     );
 
     fetchTournament();
@@ -99,14 +163,11 @@ color: "#ff7b22"
     }}
   >
     <p>
-      Type:
-      {" "}
-      {tournament.type}
+      Type: {tournament.type}
     </p>
 
     <p>
-      Prize Pool:
-      ₹
+      Prize Pool: ₹
       {tournament.prizePool}
     </p>
 
@@ -123,6 +184,27 @@ color: "#ff7b22"
       {" "}
       {tournament.status}
     </p>
+
+    <div
+      style={{
+        background: "#1e293b",
+        padding: "15px",
+        borderRadius: "10px",
+        marginTop: "15px"
+      }}
+    >
+      <h3>
+        ⏰ Tournament Starts In
+      </h3>
+
+      <h2
+        style={{
+          color: "#ff7b22"
+        }}
+      >
+        {timeLeft}
+      </h2>
+    </div>
 
     <button
       onClick={
@@ -149,14 +231,10 @@ color: "#ff7b22"
   {tournament.roomId && (
     <div
       style={{
-        background:
-          "#13203d",
-        padding:
-          "20px",
-        borderRadius:
-          "12px",
-        marginTop:
-          "20px"
+        background: "#13203d",
+        padding: "20px",
+        borderRadius: "12px",
+        marginTop: "20px"
       }}
     >
       <h2>
@@ -180,14 +258,10 @@ color: "#ff7b22"
   {tournament.resultsPublished && (
     <div
       style={{
-        background:
-          "#13203d",
-        padding:
-          "20px",
-        borderRadius:
-          "12px",
-        marginTop:
-          "20px"
+        background: "#13203d",
+        padding: "20px",
+        borderRadius: "12px",
+        marginTop: "20px"
       }}
     >
       <h2>
@@ -195,9 +269,7 @@ color: "#ff7b22"
       </h2>
 
       <p>
-        {
-          tournament.results
-        }
+        {tournament.results}
       </p>
     </div>
   )}
