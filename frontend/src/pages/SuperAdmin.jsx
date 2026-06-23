@@ -24,7 +24,7 @@ const res = await axios.get(
 
 const makeAdmin = async (id) => {
 await axios.put(
-`https://pr-esports-gameon.onrender.com/api/users/make-admin/${id}"
+"https://pr-esports-gameon.onrender.com/api/users/make-admin/${id}"
 );
 
 fetchUsers();
@@ -34,7 +34,7 @@ fetchUsers();
 const removeAdmin = async (id) => {
 await axios.put(
 await axios.put(
-`https://pr-esports-gameon.onrender.com/api/users/remove-admin/${id}`
+"https://pr-esports-gameon.onrender.com/api/users/remove-admin/${id}`
 );
 
 fetchUsers();
