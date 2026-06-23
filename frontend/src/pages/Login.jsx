@@ -1,151 +1,152 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function Login() {
-  const [form, setForm] = useState({
-    email: "",
-    password: ""
-  });
+const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
-    });
-  };
+const [form, setForm] = useState({
+email: "",
+password: ""
+});
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleChange = (e) => {
+setForm({
+...form,
+[e.target.name]: e.target.value
+});
+};
 
-    try {
-      const res = await axios.post(
-        "https://pr-esports-gameon.onrender.com/api/auth/login",
-        form
-      );
+const handleSubmit = async (e) => {
+e.preventDefault();
 
-      localStorage.setItem(
-        "token",
-        res.data.token
-      );
+try {
+  const res = await axios.post(
+    "https://pr-esports-gameon.onrender.com/api/auth/login",
+    form
+  );
 
-      localStorage.setItem(
-"user",
-JSON.stringify(res.data.user)
-);
+  localStorage.setItem(
+    "token",
+    res.data.token
+  );
 
-      // Super Admin Account
-      if (
-        form.email === "luffy@world.com" &&
-        form.password === "735208"
-      ) {
-        window.location.href =
-          "/superadmin";
-        return;
-      }
+  localStorage.setItem(
+    "user",
+    JSON.stringify(res.data.user)
+  );
 
-      // Normal User
-      window.location.href =
-        "/dashboard";
+  if (
+    form.email === "luffy@world.com" &&
+    form.password === "735208"
+  ) {
+    navigate("/superadmin");
+    return;
+  }
 
-    } catch (error) {
-      alert(
-        error.response?.data?.message ||
-        "Login Failed"
-      );
-    }
-  };
+  navigate("/dashboard");
 
-  return (
-    <div
+} catch (error) {
+  alert(
+    error.response?.data?.message ||
+    "Login Failed"
+  );
+}
+
+};
+
+return (
+<div
+style={{
+minHeight: "100vh",
+background: "#08142e",
+display: "flex",
+justifyContent: "center",
+alignItems: "center"
+}}
+>
+<form
+onSubmit={handleSubmit}
+style={{
+background: "#13203d",
+padding: "30px",
+borderRadius: "15px",
+width: "350px"
+}}
+>
+<h1
+style={{
+textAlign: "center",
+color: "#ff7b22"
+}}
+>
+Login
+</h1>
+
+    <input
+      type="email"
+      name="email"
+      placeholder="Email"
+      onChange={handleChange}
+      required
       style={{
-        minHeight: "100vh",
-        background: "#08142e",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center"
+        width: "100%",
+        padding: "12px",
+        marginTop: "15px"
+      }}
+    />
+
+    <input
+      type="password"
+      name="password"
+      placeholder="Password"
+      onChange={handleChange}
+      required
+      style={{
+        width: "100%",
+        padding: "12px",
+        marginTop: "15px"
+      }}
+    />
+
+    <button
+      type="submit"
+      style={{
+        width: "100%",
+        marginTop: "20px",
+        padding: "12px",
+        border: "none",
+        background: "#ff7b22",
+        color: "white",
+        fontWeight: "bold",
+        cursor: "pointer"
       }}
     >
-      <form
-        onSubmit={handleSubmit}
+      Login
+    </button>
+
+    <p
+      style={{
+        textAlign: "center",
+        marginTop: "15px",
+        color: "white"
+      }}
+    >
+      Don't have an account?
+      <a
+        href="/register"
         style={{
-          background: "#13203d",
-          padding: "30px",
-          borderRadius: "15px",
-          width: "350px"
+          color: "#ff7b22",
+          marginLeft: "5px"
         }}
       >
-        <h1
-          style={{
-            textAlign: "center",
-            color: "#ff7b22"
-          }}
-        >
-          Login
-        </h1>
+        Register
+      </a>
+    </p>
+  </form>
+</div>
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          onChange={handleChange}
-          required
-          style={{
-            width: "100%",
-            padding: "12px",
-            marginTop: "15px"
-          }}
-        />
-
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          onChange={handleChange}
-          required
-          style={{
-            width: "100%",
-            padding: "12px",
-            marginTop: "15px"
-          }}
-        />
-
-        <button
-          type="submit"
-          style={{
-            width: "100%",
-            marginTop: "20px",
-            padding: "12px",
-            border: "none",
-            background: "#ff7b22",
-            color: "white",
-            fontWeight: "bold",
-            cursor: "pointer"
-          }}
-        >
-          Login
-        </button>
-
-        <p
-          style={{
-            textAlign: "center",
-            marginTop: "15px",
-            color: "white"
-          }}
-        >
-          Don't have an account?
-          <a
-            href="/register"
-            style={{
-              color: "#ff7b22",
-              marginLeft: "5px"
-            }}
-          >
-            Register
-          </a>
-        </p>
-      </form>
-    </div>
-  );
+);
 }
 
 export default Login;
