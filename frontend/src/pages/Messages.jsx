@@ -1,38 +1,82 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import api from "../api/axios";
 
 function Messages() {
-const [message, setMessage] = useState("");
 
-const [messages, setMessages] = useState([
-{
-user: "System",
-text: "Welcome to PR eSports Global Chat"
+const [messages,
+setMessages] =
+useState([]);
+
+const [text,
+setText] =
+useState("");
+
+useEffect(() => {
+
+fetchMessages();
+
+const interval =
+setInterval(
+fetchMessages,
+3000
+);
+
+return () =>
+clearInterval(interval);
+
+}, []);
+
+const fetchMessages =
+async () => {
+
+try {
+
+const res =
+await api.get(
+"/chat"
+);
+
+setMessages(
+res.data.messages || []
+);
+
+} catch (err) {
+console.log(err);
 }
-]);
 
-const sendMessage = () => {
-if (!message.trim()) return;
+};
+
+const sendMessage =
+async () => {
+
+if (!text) return;
 
 const user =
-  JSON.parse(
-    localStorage.getItem("user")
-  ) || {};
+JSON.parse(
+localStorage.getItem(
+"user"
+)
+);
 
-setMessages([
-  ...messages,
-  {
-    user:
-      user.username ||
-      "Unknown Player",
-    text: message
-  }
-]);
+await api.post(
+"/chat/send",
+{
+sender:
+user._id,
+username:
+user.username,
+message: text
+}
+);
 
-setMessage("");
+setText("");
+
+fetchMessages();
 
 };
 
 return (
+
 <div
 style={{
 minHeight: "100vh",
@@ -47,77 +91,72 @@ color: "#ff7b22"
 }}
 >
 💬 Global Chat
-</h1>
-
-  <div
-    style={{
-      background: "#13203d",
-      borderRadius: "12px",
-      padding: "15px",
-      height: "60vh",
-      overflowY: "auto",
-      marginTop: "15px"
-    }}
-  >
-    {messages.map((msg, index) => (
-      <div
-        key={index}
-        style={{
-          marginBottom: "12px"
-        }}
-      >
-        <strong
-          style={{
-            color: "#ff7b22"
-          }}
-        >
-          {msg.user}
-        </strong>
-
-        <p>{msg.text}</p>
-      </div>
-    ))}
-  </div>
-
-  <div
-    style={{
-      display: "flex",
-      marginTop: "15px",
-      gap: "10px"
-    }}
-  >
-    <input
-      type="text"
-      placeholder="Type message..."
-      value={message}
-      onChange={(e) =>
-        setMessage(e.target.value)
-      }
-      style={{
-        flex: 1,
-        padding: "12px",
-        borderRadius: "8px",
-        border: "none"
-      }}
-    />
-
-    <button
-      onClick={sendMessage}
-      style={{
-        background: "#ff7b22",
-        color: "white",
-        border: "none",
-        padding: "12px 20px",
-        borderRadius: "8px",
-        cursor: "pointer"
-      }}
-    >
-      Send
-    </button>
-  </div>
+</h1><div
+style={{
+height: "70vh",
+overflowY: "auto",
+background: "#13203d",
+padding: "15px",
+borderRadius: "12px"
+}}
+>
+{messages
+.slice()
+.reverse()
+.map((msg) => (
+<div
+key={msg._id}
+style={{
+marginBottom: "10px"
+}}
+>
+<b>
+{msg.username}
+</b><p>
+{msg.message}
+</p>
 </div>
-
-);
+))}
+</div><div
+style={{
+marginTop: "15px"
+}}
+>
+<input
+value={text}
+onChange={(e) =>
+setText(
+e.target.value
+)
 }
+placeholder="Type message..."
+style={{
+width: "80%",
+padding: "10px"
+}}
+/><button
+onClick={
+sendMessage
+}
+style={{
+background:
+"#ff7b22",
+color:
+"white",
+border:
+"none",
+padding:
+"10px 15px",
+marginLeft:
+"10px"
+}}
 
-export default Messages;
+«»
+
+Send
+</button>
+
+</div>
+</div>
+);
+}export default Messages;
