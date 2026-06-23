@@ -133,15 +133,15 @@ Login
       }}
     >
       Don't have an account?
-      <a
-        href="/register"
-        style={{
-          color: "#ff7b22",
-          marginLeft: "5px"
-        }}
-      >
-        Register
-      </a>
+      <Link
+  to="/register"
+  style={{
+    color: "#ff7b22",
+    marginLeft: "5px"
+  }}
+>
+  Register
+</Link>
     </p>
   </form>
 </div>
