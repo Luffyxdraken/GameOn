@@ -57,6 +57,15 @@ PR eSports
       </button>
 
       <button
+  onClick={() =>
+    navigate("/leaderboard")
+  }
+  style={actionBtn}
+>
+  🏆 Leaderboard
+</button>
+
+      <button
         onClick={() =>
           navigate("/profile")
         }
