@@ -1,20 +1,25 @@
 const mongoose = require("mongoose");
 
-const AnnouncementSchema =
+const announcementSchema =
 new mongoose.Schema(
 {
-title: String,
-message: String,
+title: {
+type: String,
+required: true
+},
 
-createdAt: {
-type: Date,
-default: Date.now
+message: {
+type: String,
+required: true
 }
+},
+{
+timestamps: true
 }
 );
 
 module.exports =
 mongoose.model(
 "Announcement",
-AnnouncementSchema
+announcementSchema
 );
