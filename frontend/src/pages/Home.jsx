@@ -80,17 +80,21 @@ PR eSports
         My Matches
       </button>
 
-      <button
-        onClick={() => navigate("/login")}
-      >
-        Login
-      </button>
+      {!localStorage.getItem("token") && (
+  <>
+    <button
+      onClick={() => navigate("/login")}
+    >
+      Login
+    </button>
 
-      <button
-        onClick={() => navigate("/register")}
-      >
-        Create Account
-      </button>
+    <button
+      onClick={() => navigate("/register")}
+    >
+      Create Account
+    </button>
+  </>
+)}
 
       <button
         onClick={() => navigate("/admin")}
