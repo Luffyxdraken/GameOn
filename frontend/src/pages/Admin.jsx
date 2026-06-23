@@ -1,67 +1,96 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../api/axios";
 
 function Admin() {
-const [form, setForm] = useState({
-title: "",
-type: "",
-prizePool: "",
-totalSlots: ""
-});
 
-const handleChange = (e) => {
-setForm({
-...form,
-[e.target.name]:
-e.target.value
-});
+const [tournaments,
+setTournaments] =
+useState([]);
+
+const [title,
+setTitle] =
+useState("");
+
+const [type,
+setType] =
+useState("solo");
+
+const [prizePool,
+setPrizePool] =
+useState("");
+
+const [slots,
+setSlots] =
+useState("");
+
+useEffect(() => {
+fetchTournaments();
+}, []);
+
+const fetchTournaments =
+async () => {
+try {
+
+    const res =
+      await api.get(
+        "/tournaments"
+      );
+
+    setTournaments(
+      res.data.tournaments || []
+    );
+
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 const createTournament =
 async () => {
 try {
-await api.post(
-"/tournaments/create",
-{
-title: form.title,
-type: form.type,
-prizePool:
-form.prizePool,
-totalSlots:
-form.totalSlots
-}
-);
+
+    await api.post(
+      "/tournaments/create",
+      {
+        title,
+        type,
+        prizePool,
+        totalSlots: slots
+      }
+    );
 
     alert(
       "Tournament Created"
     );
 
-    setForm({
-      title: "",
-      type: "",
-      prizePool: "",
-      totalSlots: ""
-    });
+    setTitle("");
+    setPrizePool("");
+    setSlots("");
+
+    fetchTournaments();
 
   } catch (err) {
-    alert(
-      "Failed to create tournament"
-    );
+    console.log(err);
   }
 };
 
 return (
 <div
 style={{
-minHeight: "100vh",
-background: "#08142e",
-color: "white",
-padding: "20px"
+minHeight:
+"100vh",
+background:
+"#08142e",
+color:
+"white",
+padding:
+"20px"
 }}
 >
 <h1
 style={{
-color: "#ff7b22"
+color:
+"#ff7b22"
 }}
 >
 🛠 Admin Panel
@@ -69,78 +98,181 @@ color: "#ff7b22"
 
   <div
     style={{
-      background: "#13203d",
-      padding: "20px",
-      borderRadius: "12px",
-      marginTop: "20px"
+      background:
+        "#13203d",
+      padding:
+        "15px",
+      borderRadius:
+        "12px",
+      marginTop:
+        "20px"
     }}
   >
     <h2>
-      Create Tournament
+      ➕ Create Tournament
     </h2>
 
     <input
-      name="title"
-      placeholder="Tournament Title"
-      value={form.title}
-      onChange={handleChange}
-      style={inputStyle}
+      placeholder="Title"
+      value={title}
+      onChange={(e) =>
+        setTitle(
+          e.target.value
+        )
+      }
+      style={{
+        width:
+          "100%",
+        padding:
+          "10px",
+        marginTop:
+          "10px"
+      }}
     />
 
-    <input
-      name="type"
-      placeholder="Solo / Squad"
-      value={form.type}
-      onChange={handleChange}
-      style={inputStyle}
-    />
+    <select
+      value={type}
+      onChange={(e) =>
+        setType(
+          e.target.value
+        )
+      }
+      style={{
+        width:
+          "100%",
+        padding:
+          "10px",
+        marginTop:
+          "10px"
+      }}
+    >
+      <option value="solo">
+        Solo
+      </option>
+
+      <option value="squad">
+        Squad
+      </option>
+
+      <option value="guildwar">
+        Guild War
+      </option>
+    </select>
 
     <input
-      name="prizePool"
       placeholder="Prize Pool"
-      value={form.prizePool}
-      onChange={handleChange}
-      style={inputStyle}
+      value={prizePool}
+      onChange={(e) =>
+        setPrizePool(
+          e.target.value
+        )
+      }
+      style={{
+        width:
+          "100%",
+        padding:
+          "10px",
+        marginTop:
+          "10px"
+      }}
     />
 
     <input
-      name="totalSlots"
-      placeholder="Total Slots"
-      value={form.totalSlots}
-      onChange={handleChange}
-      style={inputStyle}
+      placeholder="Slots"
+      value={slots}
+      onChange={(e) =>
+        setSlots(
+          e.target.value
+        )
+      }
+      style={{
+        width:
+          "100%",
+        padding:
+          "10px",
+        marginTop:
+          "10px"
+      }}
     />
 
     <button
       onClick={
         createTournament
       }
-      style={btnStyle}
+      style={{
+        background:
+          "#ff7b22",
+        color:
+          "white",
+        border:
+          "none",
+        padding:
+          "12px 20px",
+        borderRadius:
+          "8px",
+        marginTop:
+          "10px"
+      }}
     >
       Create Tournament
     </button>
+  </div>
+
+  <div
+    style={{
+      marginTop:
+        "25px"
+    }}
+  >
+    <h2>
+      🏆 Existing Tournaments
+    </h2>
+
+    {tournaments.map(
+      (t) => (
+        <div
+          key={t._id}
+          style={{
+            background:
+              "#13203d",
+            padding:
+              "15px",
+            borderRadius:
+              "12px",
+            marginTop:
+              "15px"
+          }}
+        >
+          <h3>
+            {t.title}
+          </h3>
+
+          <p>
+            Type:
+            {" "}
+            {t.type}
+          </p>
+
+          <p>
+            Prize:
+            ₹
+            {
+              t.prizePool
+            }
+          </p>
+
+          <p>
+            Status:
+            {" "}
+            {t.status}
+          </p>
+        </div>
+      )
+    )}
   </div>
 </div>
 
 );
 }
-
-const inputStyle = {
-width: "100%",
-padding: "12px",
-marginTop: "12px",
-borderRadius: "8px",
-border: "none"
-};
-
-const btnStyle = {
-marginTop: "15px",
-background: "#ff7b22",
-color: "white",
-border: "none",
-padding: "12px 20px",
-borderRadius: "8px",
-cursor: "pointer"
-};
 
 export default Admin;
