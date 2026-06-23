@@ -1,9 +1,16 @@
 function Guilds() {
-  return (
-    <div>
-      <h1>Guilds</h1>
-    </div>
-  );
+return (
+<div
+style={{
+minHeight: "100vh",
+background: "#08142e",
+color: "white",
+padding: "20px"
+}}
+>
+<h1>Guilds Page</h1>
+</div>
+);
 }
 
 export default Guilds;
