@@ -6,6 +6,7 @@ import Register from "./pages/Register";
 import Profile from "./pages/Profile";
 import Members from "./pages/Members";
 import Messages from "./pages/Messages";
+import Leaderboard from "./pages/Leaderboard";
 import Guilds from "./pages/Guilds";
 import MyMatches from "./pages/MyMatches";
 import Notifications from "./pages/Notifications";
@@ -44,6 +45,11 @@ return (
       element={<Members />}
     />
 
+    <Route
+      path="/leaderboard"
+      element={<Leaderboard />}
+/>
+    
     <Route
       path="/messages"
       element={<Messages />}
