@@ -30,20 +30,10 @@ ROUTES
 
 */
 
-app.use(
-"/api/auth",
-require("./routes/auth")
-);
-
-app.use(
-"/api/tournaments",
-require("./routes/tournament")
-);
-
-app.use(
-"/api/users",
-require("./routes/user")
-);
+app.use("/api/auth", require("./routes/auth"));
+app.use("/api/tournaments", require("./routes/tournament"));
+app.use("/api/users", require("./routes/user"));
+app.use("/api/guilds", require("./routes/guild"));
 
 app.use(
 "/api/announcements",
