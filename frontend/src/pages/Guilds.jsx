@@ -1,77 +1,49 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
+import { useNavigate } from "react-router-dom";
 
-function Guilds() {
+function MyMatches() {
+const navigate = useNavigate();
 
-const [guilds, setGuilds] =
+const [matches, setMatches] =
 useState([]);
 
-const [guildName,
-setGuildName] =
-useState("");
-
-const [description,
-setDescription] =
-useState("");
-
-const user =
-JSON.parse(
-localStorage.getItem("user")
-);
-
 useEffect(() => {
-fetchGuilds();
+fetchMatches();
 }, []);
 
-const fetchGuilds =
+const fetchMatches =
 async () => {
+try {
+const user =
+JSON.parse(
+localStorage.getItem(
+"user"
+)
+);
 
-  const res =
-    await api.get(
-      "/guilds"
+    if (!user) return;
+
+    const res =
+      await api.get(
+        `/tournaments/player/${user._id}`
+      );
+
+    setMatches(
+      res.data.tournaments ||
+        []
     );
-
-  setGuilds(
-    res.data.guilds
-  );
-};
-
-const createGuild =
-async () => {
-
-  await api.post(
-    "/guilds/create",
-    {
-      name: guildName,
-      description,
-      userId: user._id
-    }
-  );
-
-  setGuildName("");
-  setDescription("");
-
-  fetchGuilds();
-};
-
-const joinGuild =
-async (guildId) => {
-
-  await api.post(
-    `/guilds/join/${guildId}`,
-    {
-      userId: user._id
-    }
-  );
-
-  fetchGuilds();
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 return (
 <div
 style={{
 minHeight: "100vh",
-background: "#08142e",
+background:
+"#08142e",
 color: "white",
 padding: "20px"
 }}
@@ -81,130 +53,103 @@ style={{
 color: "#ff7b22"
 }}
 >
-🛡 Guild System
+🎮 My Matches
 </h1>
-
-  <div
-    style={{
-      background: "#13203d",
-      padding: "20px",
-      borderRadius: "12px"
-    }}
-  >
-    <input
-      placeholder="Guild Name"
-      value={guildName}
-      onChange={(e)=>
-        setGuildName(
-          e.target.value
-        )
-      }
-    />
-
-    <br /><br />
-
-    <input
-      placeholder="Description"
-      value={description}
-      onChange={(e)=>
-        setDescription(
-          e.target.value
-        )
-      }
-    />
-
-    <br /><br />
-
-    <button
-      onClick={createGuild}
-    >
-      Create Guild
-    </button>
-  </div>
 
   <div
     style={{
       marginTop: "20px"
     }}
   >
-    {guilds.map(
-      (guild) => (
-        <div
-          key={guild._id}
-          style={{
-            background:
-              "#13203d",
-            padding:
-              "15px",
-            borderRadius:
-              "12px",
-            marginBottom:
-              "15px"
-          }}
-        >
-          <h3>
-            {guild.name}
-          </h3>
-
-          <p>
-            {
-              guild.description
-            }
-          </p>
-
-          <p>
-            Leader:
-            {" "}
-            {
-              guild.leader
-                ?.username
-            }
-          </p>
-
-          <p>
-            Members:
-            {" "}
-            {
-              guild.members
-                ?.length
-            }
-          </p>
-
-          <button
-            onClick={() =>
-              joinGuild(
-                guild._id
-              )
-            }
-          >
-            Join Guild
-          </button>
-
+    {matches.length ===
+    0 ? (
+      <div
+        style={{
+          background:
+            "#13203d",
+          padding:
+            "15px",
+          borderRadius:
+            "12px"
+        }}
+      >
+        You have not
+        joined any
+        tournaments.
+      </div>
+    ) : (
+      matches.map(
+        (match) => (
           <div
+            key={
+              match._id
+            }
             style={{
-              marginTop:
-                "10px"
+              background:
+                "#13203d",
+              padding:
+                "15px",
+              borderRadius:
+                "12px",
+              marginBottom:
+                "15px"
             }}
           >
-            <b>
-              Members:
-            </b>
+            <h3>
+              {
+                match.title
+              }
+            </h3>
 
-            {guild.members?.map(
-              (member) => (
-                <p
-                  key={
-                    member._id
-                  }
-                >
-                  • {
-                    member.username
-                  }
-                </p>
-              )
-            )}
+            <p>
+              Type:
+              {" "}
+              {
+                match.type
+              }
+            </p>
+
+            <p>
+              Prize:
+              ₹
+              {
+                match.prizePool
+              }
+            </p>
+
+            <p>
+              Status:
+              {" "}
+              {
+                match.status
+              }
+            </p>
+
+            <button
+              onClick={() =>
+                navigate(
+                  `/tournament/${match._id}`
+                )
+              }
+              style={{
+                background:
+                  "#ff7b22",
+                color:
+                  "white",
+                border:
+                  "none",
+                padding:
+                  "10px 15px",
+                borderRadius:
+                  "8px",
+                cursor:
+                  "pointer"
+              }}
+            >
+              View Match
+            </button>
           </div>
-        </div>
+        )
       )
     )}
   </div>
@@ -213,4 +158,4 @@ color: "#ff7b22"
 );
 }
 
-export default Guilds;
+export default MyMatches;
