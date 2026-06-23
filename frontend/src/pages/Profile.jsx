@@ -1,8 +1,50 @@
+import { useEffect, useState } from "react";
+import api from "../api/axios";
+
 function Profile() {
-const user =
+
+const storedUser =
 JSON.parse(
 localStorage.getItem("user")
-) || {};
+);
+
+const [user, setUser] =
+useState(null);
+
+useEffect(() => {
+fetchProfile();
+}, []);
+
+const fetchProfile =
+async () => {
+try {
+
+    const res =
+      await api.get(
+        `/users/${storedUser._id}`
+      );
+
+    setUser(res.data.user);
+
+  } catch (err) {
+
+    console.log(err);
+
+  }
+};
+
+if (!user) {
+return (
+<div
+style={{
+color: "white",
+padding: "20px"
+}}
+>
+Loading...
+</div>
+);
+}
 
 return (
 <div
@@ -40,7 +82,7 @@ fontSize: "50px"
         marginTop: "15px"
       }}
     >
-      {user.username || "Player"}
+      {user.username}
     </h1>
   </div>
 
@@ -54,62 +96,63 @@ fontSize: "50px"
   >
     <h2>🎮 Player Stats</h2>
 
+    <p>UID: {user.uid || "Not Set"}</p>
+
     <p>
-      UID: 735208
+      Matches Played:
+      {" "}
+      {user.matchesPlayed}
     </p>
 
     <p>
-      Matches Played: 120
+      Wins:
+      {" "}
+      {user.wins}
     </p>
 
     <p>
-      Wins: 45
+      Kills:
+      {" "}
+      {user.kills}
     </p>
 
     <p>
-      Kills: 380
+      K/D Ratio:
+      {" "}
+      {user.kd}
     </p>
 
     <p>
-      K/D Ratio: 4.2
+      Points:
+      {" "}
+      {user.points}
     </p>
 
     <p>
-      Points: 2500
+      Rank:
+      {" "}
+      #{user.rank}
     </p>
 
     <p>
-      Guild: Lost Pirates
+      Guild:
+      {" "}
+      {user.guild
+        ? "Joined"
+        : "No Guild"}
     </p>
 
     <p>
-      Rank: #1
+      Email:
+      {" "}
+      {user.email}
     </p>
 
     <p>
-      Email: {user.email}
+      Role:
+      {" "}
+      {user.role}
     </p>
-
-    <p>
-      Role: {user.role || "player"}
-    </p>
-  </div>
-
-  <div
-    style={{
-      background: "#13203d",
-      padding: "20px",
-      borderRadius: "12px",
-      marginTop: "20px"
-    }}
-  >
-    <h2>🏆 Achievements</h2>
-
-    <p>🥇 Tournament Winner</p>
-
-    <p>🔥 300+ Kills</p>
-
-    <p>🛡 Guild Leader</p>
   </div>
 </div>
 
