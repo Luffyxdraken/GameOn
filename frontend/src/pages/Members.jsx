@@ -2,32 +2,31 @@ import { useEffect, useState } from "react";
 import api from "../api/axios";
 
 function Members() {
-const [members, setMembers] = useState([]);
-const [search, setSearch] = useState("");
+
+const [members, setMembers] =
+useState([]);
 
 useEffect(() => {
 fetchMembers();
 }, []);
 
-const fetchMembers = async () => {
+const fetchMembers =
+async () => {
 try {
-const res = await api.get("/users");
 
-  setMembers(
-    res.data.users || []
-  );
-} catch (err) {
-  console.log(err);
-}
+    const res =
+      await api.get(
+        "/users"
+      );
 
+    setMembers(
+      res.data.users || []
+    );
+
+  } catch (err) {
+    console.log(err);
+  }
 };
-
-const filteredMembers =
-members.filter((member) =>
-member.username
-?.toLowerCase()
-.includes(search.toLowerCase())
-);
 
 return (
 <div
@@ -43,66 +42,66 @@ style={{
 color: "#ff7b22"
 }}
 >
-👥 Members Directory
+👥 Member Directory
 </h1>
-
-  <input
-    type="text"
-    placeholder="Search player..."
-    value={search}
-    onChange={(e) =>
-      setSearch(e.target.value)
-    }
-    style={{
-      width: "100%",
-      padding: "12px",
-      marginTop: "15px",
-      borderRadius: "8px",
-      border: "none"
-    }}
-  />
 
   <div
     style={{
       marginTop: "20px"
     }}
   >
-    {filteredMembers.length === 0 ? (
-      <div
-        style={{
-          background: "#13203d",
-          padding: "20px",
-          borderRadius: "12px"
-        }}
-      >
-        No members found
-      </div>
-    ) : (
-      filteredMembers.map(
-        (member) => (
-          <div
-            key={member._id}
-            style={{
-              background: "#13203d",
-              padding: "15px",
-              borderRadius: "12px",
-              marginBottom: "12px"
-            }}
-          >
-            <h3>
-              {member.username}
-            </h3>
+    {members.map(
+      (member) => (
+        <div
+          key={member._id}
+          style={{
+            background:
+              "#13203d",
+            padding:
+              "15px",
+            borderRadius:
+              "12px",
+            marginBottom:
+              "15px"
+          }}
+        >
+          <h3>
+            {member.username}
+          </h3>
 
-            <p>
-              {member.email}
-            </p>
+          <p>
+            Role:
+            {" "}
+            {member.role}
+          </p>
 
-            <p>
-              Role:
-              {member.role || "player"}
-            </p>
-          </div>
-        )
+          <p>
+            UID:
+            {" "}
+            {member.uid ||
+              "Not Set"}
+          </p>
+
+          <p>
+            Email:
+            {" "}
+            {member.email}
+          </p>
+
+          <p>
+            Points:
+            {" "}
+            {member.points ||
+              0}
+          </p>
+
+          <p>
+            Kills:
+            {" "}
+            {member.kills ||
+              0}
+          </p>
+        </div>
       )
     )}
   </div>
