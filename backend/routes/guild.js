@@ -156,4 +156,80 @@ success:false
 }
 });
 
+/*
+GET GUILD CHAT
+*/
+router.get(
+"/chat/:id",
+async (req, res) => {
+try {
+
+const guild =
+await Guild.findById(
+req.params.id
+).populate(
+"chatMessages.sender",
+"username"
+);
+
+if (!guild) {
+return res.status(404).json({
+success:false
+});
+}
+
+res.json({
+success:true,
+messages:
+guild.chatMessages
+});
+
+} catch(error) {
+
+res.status(500).json({
+success:false
+});
+
+}
+});
+
+/*
+SEND GUILD CHAT
+*/
+router.post(
+"/chat/:id",
+async (req, res) => {
+try {
+
+const guild =
+await Guild.findById(
+req.params.id
+);
+
+if (!guild) {
+return res.status(404).json({
+success:false
+});
+}
+
+guild.chatMessages.push({
+sender:req.body.userId,
+message:req.body.message
+});
+
+await guild.save();
+
+res.json({
+success:true
+});
+
+} catch(error) {
+
+res.status(500).json({
+success:false
+});
+
+}
+});
+
 module.exports = router;
