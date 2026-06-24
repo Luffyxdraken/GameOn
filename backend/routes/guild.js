@@ -130,4 +130,30 @@ res.status(500).json({
 }
 });
 
+  /*
+DELETE GUILD
+*/
+router.delete(
+"/delete/:id",
+async (req, res) => {
+try {
+
+await Guild.findByIdAndDelete(
+req.params.id
+);
+
+res.json({
+success:true,
+message:"Guild Deleted"
+});
+
+} catch(error) {
+
+res.status(500).json({
+success:false
+});
+
+}
+});
+
 module.exports = router;
