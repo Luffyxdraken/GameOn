@@ -207,19 +207,19 @@ color:"#ff7b22"
 }}>
 {timeLeft}
 </h2><button
-onClick={joinTournament}
-style={{
-background:"#ff7b22",
-color:"white",
-border:"none",
-padding:"12px 20px",
-borderRadius:"8px",
-cursor:"pointer"
-}}
-
-«»
-
-Join Tournament
+<button
+  onClick={joinTournament}
+  style={{
+    marginTop: "15px",
+    background: "#ff7b22",
+    color: "white",
+    border: "none",
+    padding: "12px 20px",
+    borderRadius: "8px",
+    cursor: "pointer"
+  }}
+>
+  Join Tournament
 </button>
 
 </div>{tournament.roomId && (
