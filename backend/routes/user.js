@@ -178,4 +178,39 @@ res.status(500).json({
 }
 });
 
+/*
+LEADERBOARD
+*/
+
+router.get(
+"/leaderboard",
+async (req,res) => {
+
+try {
+
+const users =
+await User.find()
+.sort({
+points:-1
+})
+.limit(100)
+.select(
+"username kills wins points kd"
+);
+
+res.json({
+success:true,
+users
+});
+
+} catch(error) {
+
+res.status(500).json({
+success:false
+});
+
+}
+
+});
+
 module.exports = router;
