@@ -1,67 +1,105 @@
 const mongoose = require("mongoose");
 
-const userSchema = new mongoose.Schema(
+const tournamentSchema = new mongoose.Schema(
 {
-username: {
-type: String,
-required: true,
-trim: true
-},
-
-email: {
-type: String,
-required: true,
-unique: true,
-lowercase: true
-},
-
-password: {
+title: {
 type: String,
 required: true
 },
 
-uid: {
-type: String,
-default: ""
-},
-
-profilePhoto: {
-type: String,
-default: ""
-},
-
-bio: {
-type: String,
-default: ""
-},
-
-role: {
+type: {
 type: String,
 enum: [
-"player",
-"admin",
-"superadmin"
+"solo",
+"squad",
+"guildwar"
 ],
-default: "player"
+default: "solo"
 },
 
-guild: {
-type: mongoose.Schema.Types.ObjectId,
-ref: "Guild",
-default: null
+description: {
+type: String,
+default: ""
 },
 
-matchesPlayed: {
+prizePool: {
 type: Number,
 default: 0
 },
+
+entryFee: {
+type: Number,
+default: 0
+},
+
+totalSlots: {
+type: Number,
+default: 12
+},
+
+filledSlots: {
+type: Number,
+default: 0
+},
+
+status: {
+type: String,
+enum: [
+"upcoming",
+"live",
+"completed"
+],
+default: "upcoming"
+},
+
+startTime: {
+type: Date
+},
+
+roomId: {
+type: String,
+default: ""
+},
+
+roomPassword: {
+type: String,
+default: ""
+},
+
+createdBy: {
+type: mongoose.Schema.Types.ObjectId,
+ref: "User"
+},
+
+joinedPlayers: [
+{
+type: mongoose.Schema.Types.ObjectId,
+ref: "User"
+}
+],
+
+admins: [
+{
+type: mongoose.Schema.Types.ObjectId,
+ref: "User"
+}
+],
+
+resultsPublished: {
+type: Boolean,
+default: false
+},
+
+results: [
+{
+player: {
+type: mongoose.Schema.Types.ObjectId,
+ref: "User"
+},
+
+position: Number,
 
 kills: {
-type: Number,
-default: 0
-},
-
-wins: {
 type: Number,
 default: 0
 },
@@ -69,28 +107,27 @@ default: 0
 points: {
 type: Number,
 default: 0
-},
-
-kd: {
-type: Number,
-default: 0
-},
-
-notifications: [
-{
-message: String,
-
-  read: {
-    type: Boolean,
-    default: false
-  },
-
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
 }
+}
+],
 
+chatMessages: [
+{
+sender: {
+type: mongoose.Schema.Types.ObjectId,
+ref: "User"
+},
+
+message: {
+type: String,
+required: true
+},
+
+createdAt: {
+type: Date,
+default: Date.now
+}
+}
 ]
 },
 {
@@ -99,6 +136,6 @@ timestamps: true
 );
 
 module.exports = mongoose.model(
-"User",
-userSchema
+"Tournament",
+tournamentSchema
 );
