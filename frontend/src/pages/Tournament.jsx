@@ -205,8 +205,10 @@ Status: {tournament.status}
 </p><h2 style={{
 color:"#ff7b22"
 }}>
-{timeLeft}
-</h2><button
+<h2>
+  {timeLeft}
+</h2>
+
 <button
   onClick={joinTournament}
   style={{
