@@ -3,7 +3,7 @@ import api from "../api/axios";
 
 function Leaderboard() {
 
-const [players, setPlayers] =
+const [players,setPlayers] =
 useState([]);
 
 useEffect(() => {
@@ -21,11 +21,13 @@ await api.get(
 );
 
 setPlayers(
-res.data.players || []
+res.data.users || []
 );
 
-} catch (err) {
+} catch(err) {
+
 console.log(err);
+
 }
 
 };
@@ -34,51 +36,41 @@ return (
 
 <div
 style={{
-minHeight: "100vh",
-background: "#08142e",
-color: "white",
-padding: "20px"
+minHeight:"100vh",
+background:"#08142e",
+color:"white",
+padding:"20px"
 }}
-><h1
-style={{
-color: "#ff7b22"
-}}
->
+><h1>
 🏆 Leaderboard
-</h1><div
-style={{
-marginTop: "20px"
-}}
->{players.map(
-(player, index) => (
+</h1>{players.map(
+(player,index)=>(
 
 <div
-key={player._id}
+key={index}
 style={{
-background: "#13203d",
-padding: "15px",
-borderRadius: "12px",
-marginBottom: "12px"
+background:"#13203d",
+padding:"15px",
+marginBottom:"10px"
 }}
 ><h2>
-#{index + 1}
+#{index+1}
 {" "}
 {player.username}
 </h2><p>
 🔥 Kills:
-{" "}
 {player.kills}
 </p><p>
 🏆 Wins:
-{" "}
 {player.wins}
 </p><p>
 ⭐ Points:
-{" "}
 {player.points}
-</p></div>)
-)}
-
-</div></div>
+</p><p>
+⚔ KD:
+{player.kd}
+</p></div>
+)
+)}</div>
 );
 }export default Leaderboard;
