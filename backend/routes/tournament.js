@@ -64,6 +64,82 @@ res.status(500).json({
 });
 
 /*
+GET TOURNAMENT CHAT
+/api/tournaments/chat/:id
+*/
+router.get("/chat/:id", async (req, res) => {
+try {
+
+const tournament =
+await Tournament.findById(req.params.id)
+.populate(
+"chatMessages.sender",
+"username"
+);
+
+if (!tournament) {
+return res.status(404).json({
+success:false
+});
+}
+
+res.json({
+success:true,
+messages:
+tournament.chatMessages
+});
+
+} catch(error) {
+
+console.error(error);
+
+res.status(500).json({
+success:false
+});
+
+}
+});
+
+/*
+SEND CHAT MESSAGE
+/api/tournaments/chat/:id
+*/
+router.post("/chat/:id", async (req, res) => {
+try {
+
+const tournament =
+await Tournament.findById(req.params.id);
+
+if (!tournament) {
+return res.status(404).json({
+success:false
+});
+}
+
+tournament.chatMessages.push({
+sender:req.body.userId,
+message:req.body.message
+});
+
+await tournament.save();
+
+res.json({
+success:true,
+message:"Chat Sent"
+});
+
+} catch(error) {
+
+console.error(error);
+
+res.status(500).json({
+success:false
+});
+
+}
+});
+
+/*
 GET SINGLE TOURNAMENT
 /api/tournaments/:id
 */
